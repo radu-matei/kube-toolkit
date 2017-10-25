@@ -11,4 +11,6 @@ message Version {
 	string git_commit = 2;
 }
 
+
+// TODO - remove this message type and use google.protobuf.Empty
 message Empty {}
