@@ -1,0 +1,8 @@
+package: github.com/radu-matei/joker
+import:
+- package: k8s.io/client-go
+  version: 4.0.0
+- package: k8s.io/apimachinery
+  subpackages:
+  - pkg/apis/meta/v1
+- package: github.com/spf13/cobra
