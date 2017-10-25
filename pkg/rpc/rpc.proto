@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package rpc;
+
+service Joker {
+    rpc GetVersion(Empty) returns (Version){}
+}
+
+message Version {
+	string sem_ver = 1;
+	string git_commit = 2;
+}
+
+message Empty {}
