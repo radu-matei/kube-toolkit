@@ -6,3 +6,5 @@ import:
   subpackages:
   - pkg/apis/meta/v1
 - package: github.com/spf13/cobra
+- package: github.com/Sirupsen/logrus
+  version: ~0.11.5
