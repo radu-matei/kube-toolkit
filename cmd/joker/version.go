@@ -1,9 +1,11 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"io"
 
+	"github.com/radu-matei/joker/pkg/joker"
 	"github.com/spf13/cobra"
 )
 
@@ -12,11 +14,12 @@ var (
 )
 
 type versionCmd struct {
-	out io.Writer
+	out    io.Writer
+	client *joker.Client
 }
 
 func newVersionCmd(out io.Writer) *cobra.Command {
-	version := &versionCmd{
+	versionCmd := &versionCmd{
 		out: out,
 	}
 
@@ -25,14 +28,20 @@ func newVersionCmd(out io.Writer) *cobra.Command {
 		Short: versionUsage,
 		Long:  versionUsage,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return version.run()
+			versionCmd.client = ensureJokerClient(versionCmd.client)
+			return versionCmd.run()
 		},
 	}
 
 	return cmd
 }
 
-func (version *versionCmd) run() error {
-	fmt.Println("Version of the Joker client")
+func (cmd *versionCmd) run() error {
+	gothamVersion, err := cmd.client.GetVersion(context.Background())
+	if err != nil {
+		return fmt.Errorf("cannot get Gotham version: %v", err)
+	}
+
+	fmt.Printf("\nGotham version:  %s Git Commit: %s", gothamVersion.GetSemVer(), gothamVersion.GetGitCommit())
 	return nil
 }

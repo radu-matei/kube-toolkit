@@ -20,11 +20,12 @@ type ClientConfig struct {
 // Client contains all necessary information to
 // connect to the Gotham server
 type Client struct {
-	cfg *ClientConfig
-	rpc rpc.JokerClient
+	Config *ClientConfig
+	RPC    rpc.JokerClient
 }
 
-func newClient(cfg *ClientConfig) *Client {
+// NewClient returns a new instance of the Joker client
+func NewClient(cfg *ClientConfig) *Client {
 	var opts []grpc.DialOption
 	opts = append(opts, grpc.WithInsecure())
 
@@ -35,8 +36,8 @@ func newClient(cfg *ClientConfig) *Client {
 	defer conn.Close()
 
 	return &Client{
-		cfg: cfg,
-		rpc: rpc.NewJokerClient(conn),
+		Config: cfg,
+		RPC:    rpc.NewJokerClient(conn),
 	}
 }
 
@@ -46,5 +47,5 @@ func (client *Client) GetVersion(ctx context.Context) (*rpc.Version, error) {
 	// TODO - remove this once google.protobuf.empty is used
 	empty := &rpc.Empty{}
 
-	return client.rpc.GetVersion(ctx, empty)
+	return client.RPC.GetVersion(ctx, empty)
 }

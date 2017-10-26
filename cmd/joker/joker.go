@@ -4,6 +4,8 @@ import (
 	"io"
 	"os"
 
+	"github.com/radu-matei/joker/pkg/joker"
+
 	log "github.com/Sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
@@ -59,4 +61,16 @@ func teardown() {
 
 func defaultGothamHost() string {
 	return os.Getenv(hostEnvVar)
+}
+
+func ensureJokerClient(client *joker.Client) *joker.Client {
+	if client == nil {
+		c := joker.ClientConfig{
+			GothamHost: gothamHost,
+			Stdout:     os.Stdout,
+			Stderr:     os.Stderr,
+		}
+		return joker.NewClient(&c)
+	}
+	return client
 }
