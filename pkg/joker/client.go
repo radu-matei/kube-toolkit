@@ -33,7 +33,7 @@ func NewClient(cfg *ClientConfig) *Client {
 	if err != nil {
 		log.Fatalf("could not dial server: %v", err)
 	}
-	defer conn.Close()
+	//defer conn.Close()
 
 	return &Client{
 		Config: cfg,
