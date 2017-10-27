@@ -6,6 +6,7 @@ import (
 	"io"
 
 	"github.com/radu-matei/joker/pkg/joker"
+	"github.com/radu-matei/joker/pkg/version"
 	"github.com/spf13/cobra"
 )
 
@@ -41,7 +42,7 @@ func (cmd *versionCmd) run() error {
 	if err != nil {
 		return fmt.Errorf("cannot get Gotham version: %v", err)
 	}
-
-	fmt.Printf("\nGotham version:  %s Git Commit: %s", gothamVersion.SemVer, gothamVersion.GitCommit)
+	fmt.Printf("Joker Semver: %s GitCommit: %s\n", version.SemVer, version.GitCommit)
+	fmt.Printf("Gotham SemVer:  %s Git Commit: %s\n", gothamVersion.SemVer, gothamVersion.GitCommit)
 	return nil
 }

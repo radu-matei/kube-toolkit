@@ -3,12 +3,13 @@ package gotham
 import (
 	"fmt"
 	"net"
+	"sync"
 
-	"golang.org/x/net/context"
-
-	"google.golang.org/grpc"
-
+	log "github.com/Sirupsen/logrus"
 	"github.com/radu-matei/joker/pkg/rpc"
+	"github.com/radu-matei/joker/pkg/version"
+	"golang.org/x/net/context"
+	"google.golang.org/grpc"
 )
 
 // ServerConfig contains all configuration for the Gotham server
@@ -24,21 +25,14 @@ type Server struct {
 
 // NewServer returns a new instance of the Gotham server
 func NewServer(cfg *ServerConfig) *Server {
-	server := new(Server)
-	server.Config = cfg
-	server.RPC = grpc.NewServer()
-
-	return server
-
-	// return &Server{
-	// 	Config: cfg,
-	// 	RPC:    grpc.NewServer(),
-	// }
+	return &Server{
+		Config: cfg,
+		RPC:    grpc.NewServer(),
+	}
 }
 
 // Serve starts the server and listens on ListenAddress
-func (server *Server) Serve() error {
-	fmt.Println("serve function")
+func (server *Server) Serve(ctx context.Context) error {
 
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", 10000))
 	if err != nil {
@@ -47,42 +41,38 @@ func (server *Server) Serve() error {
 
 	rpc.RegisterJokerServer(server.RPC, server)
 
-	err = server.RPC.Serve(lis)
-	fmt.Printf("%v", err)
+	_, cancel := context.WithCancel(ctx)
+	var wg sync.WaitGroup
+	errc := make(chan error, 1)
 
-	return err
+	wg.Add(1)
+	go func() {
+		errc <- server.RPC.Serve(lis)
+		fmt.Printf("starting to serve...")
+		close(errc)
+		wg.Done()
+	}()
 
-	//_, cancel := context.WithCancel(ctx)
-	//var wg sync.WaitGroup
-	//errc := make(chan error, 1)
-	/*
-		//wg.Add(1)
-		go func() {
-			errc <- grpcServer.Serve(lis)
-			fmt.Println("actual serve")
-			close(errc)
-			//wg.Done()
-		}()
+	defer func() {
+		server.RPC.Stop()
+		log.Printf("stopping the server")
+		cancel()
+		wg.Wait()
+	}()
 
-		defer func() {
-			grpcServer.Stop()
-			cancel()
-			//wg.Wait()
-		}()
+	select {
+	case <-ctx.Done():
+		return ctx.Err()
+	case err := <-errc:
+		return err
+	}
 
-		select {
-		case <-ctx.Done():
-			return ctx.Err()
-		case err := <-errc:
-			return err
-		}
-	*/
 }
 
 // GetVersion returns the current version of the server.
 func (server *Server) GetVersion(ctx context.Context, _ *rpc.Empty) (*rpc.Version, error) {
-	fmt.Println("executing gotham version")
+	log.Printf("executing gotham version")
 	return &rpc.Version{
-		SemVer:    "v0.1-experimental",
-		GitCommit: "git commit"}, nil
+		SemVer:    version.SemVer,
+		GitCommit: version.GitCommit}, nil
 }

@@ -4,8 +4,8 @@ import (
 	"io"
 
 	"github.com/radu-matei/joker/pkg/gotham"
-
 	"github.com/spf13/cobra"
+	"golang.org/x/net/context"
 )
 
 var (
@@ -43,5 +43,5 @@ func (cmd *startCmd) run() error {
 		ListenAddress: listenAddress,
 	}
 
-	return gotham.NewServer(cfg).Serve()
+	return gotham.NewServer(cfg).Serve(context.Background())
 }
