@@ -60,17 +60,16 @@ func teardown() {
 }
 
 func defaultGothamHost() string {
-	return os.Getenv(hostEnvVar)
+	return "127.0.0.1:10000"
 }
 
 func ensureJokerClient(client *joker.Client) *joker.Client {
-	if client == nil {
-		c := joker.ClientConfig{
-			GothamHost: gothamHost,
-			Stdout:     os.Stdout,
-			Stderr:     os.Stderr,
-		}
-		return joker.NewClient(&c)
+
+	cfg := joker.ClientConfig{
+		GothamHost: gothamHost,
+		Stdout:     os.Stdout,
+		Stderr:     os.Stderr,
 	}
-	return client
+	return joker.NewClient(&cfg)
+
 }

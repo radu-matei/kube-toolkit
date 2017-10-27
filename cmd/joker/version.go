@@ -42,6 +42,6 @@ func (cmd *versionCmd) run() error {
 		return fmt.Errorf("cannot get Gotham version: %v", err)
 	}
 
-	fmt.Printf("\nGotham version:  %s Git Commit: %s", gothamVersion.GetSemVer(), gothamVersion.GetGitCommit())
+	fmt.Printf("\nGotham version:  %s Git Commit: %s", gothamVersion.SemVer, gothamVersion.GitCommit)
 	return nil
 }
