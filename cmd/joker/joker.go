@@ -4,9 +4,9 @@ import (
 	"io"
 	"os"
 
-	"github.com/radu-matei/joker/pkg/joker"
-
 	log "github.com/Sirupsen/logrus"
+	"github.com/kubernetes/helm/pkg/kube"
+	"github.com/radu-matei/joker/pkg/joker"
 	"github.com/spf13/cobra"
 )
 
@@ -20,6 +20,8 @@ var (
 	flagDebug   bool
 	kubeContext string
 	gothamHost  string
+
+	ghostTunnel *kube.Tunnel
 )
 
 func newRootCmd(out io.Writer, in io.Reader) *cobra.Command {
@@ -47,6 +49,44 @@ func newRootCmd(out io.Writer, in io.Reader) *cobra.Command {
 
 	return cmd
 }
+
+//func setupConnection(c *cobra.Command, args []string) error {
+// 	if draftHost == "" {
+// 		clientset, config, err := getKubeClient(kubeContext)
+// 		if err != nil {
+// 			return err
+// 		}
+// 		clientConfig, err := config.ClientConfig()
+// 		if err != nil {
+// 			return err
+// 		}
+// 		tunnel, err := portforwarder.New(clientset, clientConfig, draftNamespace)
+// 		if err != nil {
+// 			return err
+// 		}
+
+// 		gothamHost = fmt.Sprintf("localhost:%d", tunnel.Local)
+// 		log.Debugf("Created tunnel using local port: '%d'", tunnel.Local)
+// 	}
+
+// 	log.Debugf("SERVER: %q", draftHost)
+// 	return nil
+// }
+
+// getKubeClient is a convenience method for creating kubernetes config and client
+// for a given kubeconfig context
+// func getKubeClient(context string) (*kubernetes.Clientset, clientcmd.ClientConfig, error) {
+// 	config := kube.GetConfig(context)
+// 	clientConfig, err := config.ClientConfig()
+// 	if err != nil {
+// 		return nil, nil, fmt.Errorf("could not get kubernetes config for context '%s': %s", context, err)
+// 	}
+// 	client, err := kubernetes.NewForConfig(clientConfig)
+// 	if err != nil {
+// 		return nil, nil, fmt.Errorf("could not get kubernetes client: %s", err)
+// 	}
+// 	return client, config, nil
+// }
 
 func main() {
 	cmd := newRootCmd(os.Stdout, os.Stdin)

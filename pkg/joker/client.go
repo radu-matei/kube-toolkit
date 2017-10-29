@@ -33,6 +33,8 @@ func NewClient(cfg *ClientConfig) *Client {
 	if err != nil {
 		log.Fatalf("could not dial server: %v", err)
 	}
+
+	// TODO - Investigate deferring the closing of the connection
 	//defer conn.Close()
 
 	return &Client{
@@ -49,3 +51,11 @@ func (client *Client) GetVersion(ctx context.Context) (*rpc.Version, error) {
 
 	return client.RPC.GetVersion(ctx, empty)
 }
+
+// connect connects the DraftClient to the DraftServer.
+// func connect(server *Client) (conn *grpc.ClientConn, err error) {
+// 	if conn, err = grpc.Dial(server.Config.GothamHost, grpc.WithInsecure()); err != nil {
+// 		return nil, fmt.Errorf("failed to dial %q: %v", server.Config.GothamHost, err)
+// 	}
+// 	return conn, nil
+// }
