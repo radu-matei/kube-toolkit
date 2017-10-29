@@ -35,3 +35,7 @@ joker:
 gotham:
 	cd $(GOTHAM_CMD_PATH) && \
 	go build -ldflags '$(LDFLAGS)' -o ../../$(OUTPUT_DIR)/$(GOTHAM_BINARY_NAME)
+
+.PHONY: clean
+clean:
+	rm -rf bin/
