@@ -66,7 +66,6 @@ func setupConnection(c *cobra.Command, args []string) error {
 			return err
 		}
 
-		fmt.Printf("%v %v %v", clientset, config, clientConfig)
 		tunnel, err := portforwarder.New(clientset, clientConfig, "default")
 		if err != nil {
 			return err
