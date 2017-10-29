@@ -1,0 +1,40 @@
+[[constraint]]
+  name = "github.com/Sirupsen/logrus"
+  version = "1.0.3"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/golang/protobuf"
+
+[[constraint]]
+  name = "github.com/kubernetes/helm"
+  version = "2.7.0"
+
+[[constraint]]
+  name = "github.com/spf13/cobra"
+  version = "0.0.1"
+
+[[constraint]]
+  branch = "master"
+  name = "golang.org/x/net"
+
+[[constraint]]
+  name = "google.golang.org/grpc"
+  version = "1.7.1"
+
+[[constraint]]
+  name = "github.com/docker/distribution"
+  revision = "edc3ab29cdff8694dd6feb85cfeb4b5f1b38ed9c"
+
+
+[[constraint]]
+  name = "github.com/opencontainers/go-digest"
+  version = "1.0.0-rc1"
+
+[[constraint]]
+  branch = "release-1.8"
+  name = "k8s.io/api"
+
+[[constraint]]
+  branch = "release-1.8"
+  name = "k8s.io/apimachinery"
