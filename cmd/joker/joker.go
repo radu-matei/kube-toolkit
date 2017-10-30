@@ -26,7 +26,7 @@ var (
 	kubeContext string
 	gothamHost  string
 
-	ghostTunnel *kube.Tunnel
+	gothamTunnel *kube.Tunnel
 )
 
 func newRootCmd(out io.Writer, in io.Reader) *cobra.Command {
@@ -66,13 +66,13 @@ func setupConnection(c *cobra.Command, args []string) error {
 			return err
 		}
 
-		tunnel, err := portforwarder.New(clientset, clientConfig, "default")
+		gothamTunnel, err := portforwarder.New(clientset, clientConfig, "default")
 		if err != nil {
 			return err
 		}
 
-		gothamHost = fmt.Sprintf("localhost:%d", tunnel.Local)
-		log.Debugf("Created tunnel using local port: '%d'", tunnel.Local)
+		gothamHost = fmt.Sprintf("localhost:%d", gothamTunnel.Local)
+		log.Debugf("Created tunnel using local port: '%d'", gothamTunnel.Local)
 	}
 
 	log.Debugf("SERVER: %q", gothamHost)
@@ -102,7 +102,9 @@ func main() {
 }
 
 func teardown() {
-
+	if gothamTunnel != nil {
+		gothamTunnel.Close()
+	}
 }
 
 func defaultGothamHost() string {
