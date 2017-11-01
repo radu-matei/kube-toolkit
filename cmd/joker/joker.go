@@ -15,10 +15,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const (
-	hostEnvVar = "GOTHAM_HOST"
-)
-
 var (
 	globalUsage = "Joker - the cloud service deployment for Kubernetes"
 
@@ -46,7 +42,7 @@ func newRootCmd(out io.Writer, in io.Reader) *cobra.Command {
 	}
 
 	flags := cmd.PersistentFlags()
-	flags.BoolVar(&flagDebug, "debug", true, "enable verbose output")
+	flags.BoolVar(&flagDebug, "debug", false, "enable verbose output")
 	flags.StringVar(&kubeContext, "kube-context", "", "kubeconfig context to use")
 	flags.StringVar(&gothamHost, "host", "", "address of Gotham server")
 
@@ -76,16 +72,6 @@ func setupConnection(c *cobra.Command, args []string) error {
 		log.Debugf("Created tunnel using local port: '%d'", gothamTunnel.Local)
 	}
 
-	// clientset, _, err := getKubeClient(kubeContext)
-	// if err != nil {
-	// 	return err
-	// }
-	// pods, err := clientset.CoreV1().Pods("").List(metav1.ListOptions{})
-	// if err != nil {
-	// 	panic(err.Error())
-	// }
-	// fmt.Printf("There are %d pods in the cluster\n", len(pods.Items))
-
 	log.Debugf("SERVER: %q", gothamHost)
 	return nil
 }
@@ -98,7 +84,7 @@ func getKubeClient(context string) (*kubernetes.Clientset, clientcmd.ClientConfi
 	config := kube.GetConfig(context)
 	clientConfig, err := config.ClientConfig()
 	if err != nil {
-		log.Debug("cannot get clientConfig: %v", err)
+		log.Debugf("cannot get clientConfig: %v", err)
 		return nil, nil, fmt.Errorf("could not get kubernetes config for context '%s': %s", context, err)
 	}
 
@@ -117,7 +103,7 @@ func main() {
 }
 
 func teardown() {
-	log.Debug("Tearing down tunnel connection to Gotham...")
+	log.Debugf("Tearing down tunnel connection to Gotham...")
 	if gothamTunnel != nil {
 		gothamTunnel.Close()
 	}
