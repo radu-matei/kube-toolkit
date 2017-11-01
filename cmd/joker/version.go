@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 
+	log "github.com/Sirupsen/logrus"
 	"github.com/radu-matei/joker/pkg/joker"
 	"github.com/radu-matei/joker/pkg/version"
 	"github.com/spf13/cobra"
@@ -29,6 +30,7 @@ func newVersionCmd(out io.Writer) *cobra.Command {
 		Short: versionUsage,
 		Long:  versionUsage,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			setupConnection(cmd, args)
 			versionCmd.client = ensureJokerClient(versionCmd.client)
 			return versionCmd.run()
 		},
@@ -38,6 +40,9 @@ func newVersionCmd(out io.Writer) *cobra.Command {
 }
 
 func (cmd *versionCmd) run() error {
+
+	log.Debugf("making request to: %s", gothamHost)
+
 	gothamVersion, err := cmd.client.GetVersion(context.Background())
 	if err != nil {
 		return fmt.Errorf("cannot get Gotham version: %v", err)

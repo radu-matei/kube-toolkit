@@ -46,9 +46,9 @@ func newRootCmd(out io.Writer, in io.Reader) *cobra.Command {
 	}
 
 	flags := cmd.PersistentFlags()
-	flags.BoolVar(&flagDebug, "debug", false, "enable verbose output")
+	flags.BoolVar(&flagDebug, "debug", true, "enable verbose output")
 	flags.StringVar(&kubeContext, "kube-context", "", "kubeconfig context to use")
-	flags.StringVar(&gothamHost, "host", defaultGothamHost(), "address of Gotham server")
+	flags.StringVar(&gothamHost, "host", "", "address of Gotham server")
 
 	cmd.AddCommand(newVersionCmd(out))
 
@@ -61,6 +61,7 @@ func setupConnection(c *cobra.Command, args []string) error {
 		if err != nil {
 			return err
 		}
+
 		clientConfig, err := config.ClientConfig()
 		if err != nil {
 			return err
@@ -75,6 +76,16 @@ func setupConnection(c *cobra.Command, args []string) error {
 		log.Debugf("Created tunnel using local port: '%d'", gothamTunnel.Local)
 	}
 
+	// clientset, _, err := getKubeClient(kubeContext)
+	// if err != nil {
+	// 	return err
+	// }
+	// pods, err := clientset.CoreV1().Pods("").List(metav1.ListOptions{})
+	// if err != nil {
+	// 	panic(err.Error())
+	// }
+	// fmt.Printf("There are %d pods in the cluster\n", len(pods.Items))
+
 	log.Debugf("SERVER: %q", gothamHost)
 	return nil
 }
@@ -82,11 +93,15 @@ func setupConnection(c *cobra.Command, args []string) error {
 // getKubeClient is a convenience method for creating kubernetes config and client
 // for a given kubeconfig context
 func getKubeClient(context string) (*kubernetes.Clientset, clientcmd.ClientConfig, error) {
+	log.Debugf("getting kube client using Kubernetes context: %v", context)
+
 	config := kube.GetConfig(context)
 	clientConfig, err := config.ClientConfig()
 	if err != nil {
+		log.Debug("cannot get clientConfig: %v", err)
 		return nil, nil, fmt.Errorf("could not get kubernetes config for context '%s': %s", context, err)
 	}
+
 	client, err := kubernetes.NewForConfig(clientConfig)
 	if err != nil {
 		return nil, nil, fmt.Errorf("could not get kubernetes client: %s", err)
@@ -102,17 +117,14 @@ func main() {
 }
 
 func teardown() {
+	log.Debug("Tearing down tunnel connection to Gotham...")
 	if gothamTunnel != nil {
 		gothamTunnel.Close()
 	}
 }
 
-func defaultGothamHost() string {
-	return "127.0.0.1:10000"
-}
-
 func ensureJokerClient(client *joker.Client) *joker.Client {
-
+	log.Debugf("passing gothamHost: %s", gothamHost)
 	cfg := joker.ClientConfig{
 		GothamHost: gothamHost,
 		Stdout:     os.Stdout,
