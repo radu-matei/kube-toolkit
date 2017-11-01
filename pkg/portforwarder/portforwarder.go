@@ -3,6 +3,7 @@ package portforwarder
 import (
 	"fmt"
 
+	log "github.com/Sirupsen/logrus"
 	"github.com/kubernetes/helm/pkg/kube"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -18,6 +19,8 @@ func New(clientset *kubernetes.Clientset, config *restclient.Config, namespace s
 	if err != nil {
 		return nil, err
 	}
+	log.Debugf("found pod: %s", podName)
+
 	const gothamPort = 10000
 	t := kube.NewTunnel(clientset.CoreV1().RESTClient(), config, namespace, podName, gothamPort)
 	return t, t.ForwardPort()
@@ -25,7 +28,7 @@ func New(clientset *kubernetes.Clientset, config *restclient.Config, namespace s
 
 func getGothamPodName(clientset *kubernetes.Clientset, namespace string) (string, error) {
 	// TODO use a const for labels
-	selector := labels.Set{"app": "joker", "name": "gotham"}.AsSelector()
+	selector := labels.Set{"app": "gotham", "name": "gotham"}.AsSelector()
 	pod, err := getFirstRunningPod(clientset, selector, namespace)
 	if err != nil {
 		return "", err
