@@ -12,6 +12,8 @@ GOTHAM_CMD_PATH = cmd/gotham
 JOKER_BINARY_NAME = joker
 GOTHAM_BINARY_NAME = gotham
 
+GOTHAM_LINUX_BINARY = gotham-linux
+
 OUTPUT_DIR = bin
 VERSION_PACKAGE = github.com/radu-matei/joker/pkg/version
 LDFLAGS += -X $(VERSION_PACKAGE).GitCommit=${GIT_COMMIT}
@@ -39,3 +41,9 @@ gotham:
 .PHONY: clean
 clean:
 	rm -rf bin/
+
+.PHONY: gotham-linux
+gotham-linux:
+	cd $(GOTHAM_CMD_PATH) && \
+	GOOS=linux go build -ldflags '$(LDFLAGS)' -o ../../$(OUTPUT_DIR)/$(GOTHAM_LINUX_BINARY)
+	
