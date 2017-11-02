@@ -2,6 +2,7 @@ package joker
 
 import (
 	"context"
+	"fmt"
 	"io"
 
 	"google.golang.org/grpc"
@@ -30,12 +31,11 @@ func NewClient(cfg *ClientConfig) *Client {
 	opts = append(opts, grpc.WithInsecure())
 
 	conn, err := grpc.Dial(cfg.GothamHost, opts...)
+	// TODO - Investigate deferring the closing of the connection
+	//defer conn.Close()
 	if err != nil {
 		log.Fatalf("could not dial server: %v", err)
 	}
-
-	// TODO - Investigate deferring the closing of the connection
-	//defer conn.Close()
 
 	return &Client{
 		Config: cfg,
@@ -50,6 +50,31 @@ func (client *Client) GetVersion(ctx context.Context) (*rpc.Version, error) {
 	empty := &rpc.Empty{}
 
 	return client.RPC.GetVersion(ctx, empty)
+}
+
+// InitializeCloud initializes a cloud
+func (client *Client) InitializeCloud(ctx context.Context, cfg *rpc.CloudConfig, opts ...grpc.CallOption) error {
+	log.Debugf("called InitializeCloud client method...")
+
+	stream, err := client.RPC.InitializeCloud(ctx, cfg)
+	if err != nil {
+		log.Fatalf("cannot initialize cloud: %v", err)
+		return err
+	}
+
+	for {
+		message, err := stream.Recv()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			log.Fatalf("error receiving stream: %v", err)
+		}
+
+		fmt.Println(message.Message)
+	}
+
+	return nil
 }
 
 // connect connects the DraftClient to the DraftServer.
