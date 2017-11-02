@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net"
 	"sync"
+	"time"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/radu-matei/joker/pkg/rpc"
@@ -48,14 +49,14 @@ func (server *Server) Serve(ctx context.Context) error {
 	wg.Add(1)
 	go func() {
 		errc <- server.RPC.Serve(lis)
-		fmt.Printf("starting to serve...")
+		log.Debugf("starting to serve...")
 		close(errc)
 		wg.Done()
 	}()
 
 	defer func() {
 		server.RPC.Stop()
-		log.Printf("stopping the server")
+		log.Debugf("stopping the server")
 		cancel()
 		wg.Wait()
 	}()
@@ -71,8 +72,25 @@ func (server *Server) Serve(ctx context.Context) error {
 
 // GetVersion returns the current version of the server.
 func (server *Server) GetVersion(ctx context.Context, _ *rpc.Empty) (*rpc.Version, error) {
-	log.Printf("executing gotham version")
+	log.Debugf("executing gotham version")
 	return &rpc.Version{
 		SemVer:    version.SemVer,
 		GitCommit: version.GitCommit}, nil
+}
+
+// InitializeCloud initializes a cloud
+func (server *Server) InitializeCloud(cfg *rpc.CloudConfig, stream rpc.Joker_InitializeCloudServer) error {
+	log.Debugf("received InitializeCloud server method with cfg: %s, %s", cfg.CloudName, cfg.ContainerImage)
+	for i := 0; i < 5; i++ {
+		err := stream.Send(&rpc.CloudInitStream{
+			Message: fmt.Sprintf("Sending stream back to client, iteration: %d", i),
+		})
+		if err != nil {
+			return err
+		}
+
+		time.Sleep(2 * time.Second)
+	}
+
+	return nil
 }
