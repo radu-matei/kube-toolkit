@@ -46,7 +46,10 @@ func newRootCmd(out io.Writer, in io.Reader) *cobra.Command {
 	flags.StringVar(&kubeContext, "kube-context", "", "kubeconfig context to use")
 	flags.StringVar(&gothamHost, "host", "", "address of Gotham server")
 
-	cmd.AddCommand(newVersionCmd(out))
+	cmd.AddCommand(
+		newVersionCmd(out),
+		newCloudInitCmd(out),
+	)
 
 	return cmd
 }
@@ -103,8 +106,8 @@ func main() {
 }
 
 func teardown() {
-	log.Debugf("Tearing down tunnel connection to Gotham...")
 	if gothamTunnel != nil {
+		log.Debugf("Tearing down tunnel connection to Gotham...")
 		gothamTunnel.Close()
 	}
 }
@@ -117,5 +120,4 @@ func ensureJokerClient(client *joker.Client) *joker.Client {
 		Stderr:     os.Stderr,
 	}
 	return joker.NewClient(&cfg)
-
 }
