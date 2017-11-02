@@ -3,7 +3,8 @@ syntax = "proto3";
 package rpc;
 
 service Joker {
-    rpc GetVersion(Empty) returns (Version){}
+	rpc GetVersion(Empty) returns (Version){}
+	rpc InitializeCloud(CloudConfig) returns(stream CloudInitStream){}
 }
 
 message Version {
@@ -11,6 +12,14 @@ message Version {
 	string git_commit = 2;
 }
 
+message CloudConfig {
+	string container_image = 1;
+	string cloud_name = 2;
+}
+
+message CloudInitStream {
+	string message = 1;
+}
 
 // TODO - remove this message type and use google.protobuf.Empty
 message Empty {}
