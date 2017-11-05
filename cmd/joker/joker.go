@@ -5,6 +5,8 @@ import (
 	"io"
 	"os"
 
+	"google.golang.org/grpc"
+
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
 
@@ -22,7 +24,7 @@ var (
 	kubeContext string
 	gothamHost  string
 
-	gothamTunnel *kube.Tunnel
+	//gothamTunnel *kube.Tunnel
 )
 
 func newRootCmd(out io.Writer, in io.Reader) *cobra.Command {
@@ -106,18 +108,19 @@ func main() {
 }
 
 func teardown() {
-	if gothamTunnel != nil {
-		log.Debugf("Tearing down tunnel connection to Gotham...")
-		gothamTunnel.Close()
-	}
+	// if gothamTunnel != nil {
+	// 	log.Debugf("Tearing down tunnel connection to Gotham...")
+	// 	gothamTunnel.Close()
+	// }
 }
 
-func ensureJokerClient(client *joker.Client) *joker.Client {
+func ensureJokerClient(client *joker.Client, conn *grpc.ClientConn) *joker.Client {
 	log.Debugf("passing gothamHost: %s", gothamHost)
-	cfg := joker.ClientConfig{
+	cfg := &joker.ClientConfig{
 		GothamHost: gothamHost,
 		Stdout:     os.Stdout,
 		Stderr:     os.Stderr,
 	}
-	return joker.NewClient(&cfg)
+
+	return joker.NewClient(cfg, conn)
 }

@@ -31,7 +31,13 @@ func newCloudInitCmd(out io.Writer) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			setupConnection(cmd, args)
 
-			cloudInitCmd.client = ensureJokerClient(cloudInitCmd.client)
+			conn, err := joker.GetGRPCConnection(gothamHost)
+			if err != nil {
+				log.Fatalf("cannot create grpc connection: %v", err)
+			}
+			defer conn.Close()
+
+			cloudInitCmd.client = ensureJokerClient(cloudInitCmd.client, conn)
 			return cloudInitCmd.run()
 		},
 	}
@@ -42,8 +48,7 @@ func newCloudInitCmd(out io.Writer) *cobra.Command {
 func (cmd *cloudInitCmd) run() error {
 
 	cfg := &rpc.CloudConfig{
-		CloudName:      "awesome-cloud",
-		ContainerImage: "docker-hub-image",
+		CloudProvider: rpc.Cloud_AZURE,
 	}
 	err := cmd.client.InitializeCloud(context.Background(), cfg)
 

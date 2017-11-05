@@ -31,7 +31,7 @@ func newVersionCmd(out io.Writer) *cobra.Command {
 		Long:  versionUsage,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			setupConnection(cmd, args)
-			versionCmd.client = ensureJokerClient(versionCmd.client)
+
 			return versionCmd.run()
 		},
 	}
@@ -42,6 +42,14 @@ func newVersionCmd(out io.Writer) *cobra.Command {
 func (cmd *versionCmd) run() error {
 
 	log.Debugf("making request to: %s", gothamHost)
+
+	conn, err := joker.GetGRPCConnection(gothamHost)
+	if err != nil {
+		log.Fatalf("cannot create grpc connection: %v", err)
+	}
+	defer conn.Close()
+
+	cmd.client = ensureJokerClient(cmd.client, conn)
 
 	gothamVersion, err := cmd.client.GetVersion(context.Background())
 	if err != nil {

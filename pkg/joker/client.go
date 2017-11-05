@@ -26,16 +26,9 @@ type Client struct {
 }
 
 // NewClient returns a new instance of the Joker client
-func NewClient(cfg *ClientConfig) *Client {
+func NewClient(cfg *ClientConfig, conn *grpc.ClientConn) *Client {
 	var opts []grpc.DialOption
 	opts = append(opts, grpc.WithInsecure())
-
-	conn, err := grpc.Dial(cfg.GothamHost, opts...)
-	// TODO - Investigate deferring the closing of the connection
-	//defer conn.Close()
-	if err != nil {
-		log.Fatalf("could not dial server: %v", err)
-	}
 
 	return &Client{
 		Config: cfg,
@@ -77,10 +70,10 @@ func (client *Client) InitializeCloud(ctx context.Context, cfg *rpc.CloudConfig,
 	return nil
 }
 
-// connect connects the DraftClient to the DraftServer.
-// func connect(server *Client) (conn *grpc.ClientConn, err error) {
-// 	if conn, err = grpc.Dial(server.Config.GothamHost, grpc.WithInsecure()); err != nil {
-// 		return nil, fmt.Errorf("failed to dial %q: %v", server.Config.GothamHost, err)
-// 	}
-// 	return conn, nil
-// }
+//GetGRPCConnection returns a new grpc connection
+func GetGRPCConnection(gothamHost string) (conn *grpc.ClientConn, err error) {
+	if conn, err = grpc.Dial(gothamHost, grpc.WithInsecure()); err != nil {
+		return nil, fmt.Errorf("failed to dial %q: %v", gothamHost, err)
+	}
+	return conn, nil
+}
