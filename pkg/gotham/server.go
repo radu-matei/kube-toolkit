@@ -80,7 +80,7 @@ func (server *Server) GetVersion(ctx context.Context, _ *rpc.Empty) (*rpc.Versio
 
 // InitializeCloud initializes a cloud
 func (server *Server) InitializeCloud(cfg *rpc.CloudConfig, stream rpc.Joker_InitializeCloudServer) error {
-	log.Debugf("received InitializeCloud server method with cfg: %s, %s", cfg.CloudName, cfg.ContainerImage)
+	log.Debugf("received InitializeCloud server method with cfg: %s", cfg.CloudProvider.String())
 	for i := 0; i < 5; i++ {
 		err := stream.Send(&rpc.CloudInitStream{
 			Message: fmt.Sprintf("Sending stream back to client, iteration: %d", i),

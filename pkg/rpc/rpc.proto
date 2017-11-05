@@ -13,10 +13,15 @@ message Version {
 }
 
 message CloudConfig {
-	string container_image = 1;
-	string cloud_name = 2;
+	cloud cloud_provider = 1;
 }
 
+enum cloud {
+	UNKNOWN = 0;
+	AWS = 1;
+	AZURE = 2;
+	GCP = 3;
+}
 message CloudInitStream {
 	string message = 1;
 }
