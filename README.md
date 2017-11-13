@@ -61,9 +61,9 @@ How about [Kubernetes Service Brokers](https://github.com/kubernetes-incubator/s
 > A service broker is an endpoint that manages a set of software offerings called services. The end-goal of the service-catalog project is to provide a way for Kubernetes users to consume services from brokers and easily configure their applications to use those services, without needing detailed knowledge about how those services are created or managed.
 
 
-While the service brokers extend the `kubectl` functionality, and seem to be more generic (and extensible to any sort of service), `joker` limits itself to working with Azure, GCP and AWS and making use of services from these cloud providers as easy as possible.
+While the service brokers extend the `kubectl` functionality, and seem to be more generic (and extensible to any sort of service), `joker` limits itself to working with AWS, Azure and GCP and making use of services from these cloud providers as easy as possible.
 
-Service Catalog is an awesome feature (that I am glad I discovered), but at this moment it seems like you need to understand a lot of concepts before integrating with Azure, GCP and AWS - and it is a lot more powerful than what `joker` wants to be.
+Service Catalog is an awesome feature (that I am glad I discovered), but at this moment it seems like you need to understand a lot of concepts before integrating with AWS, Azure and GCP - and it is a lot more powerful than what `joker` wants to be.
 
 Why the name?
 -------------
