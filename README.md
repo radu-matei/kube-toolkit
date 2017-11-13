@@ -84,8 +84,8 @@ Initial thoughts
 Considerations
 --------------
 
-- while I work for Microsoft, **this is not an official Microsoft project**
-- this project is highly experimental (at the time of writing this document, not a single line of code was written)
+- while I work at Microsoft, **this is not an official Microsoft project**
+- this project is highly experimental 
 - this project wants to explore the other side of developing Kubernetes apps with a cloud provider - so far, the discussion has been: "how do we deploy Kubernetes itself on this cloud provider?" rather than: "how do we use services from this cloud provider together with Kubernetes in the most convenient way?"
 
 - some people will argue that this is way out of scope for Kubernetes - but I would say that Kubernetes already make use of great platform features (load balancers, storage) - why not expand that to databases, caches and cool platform services people want to use with the cloud?
