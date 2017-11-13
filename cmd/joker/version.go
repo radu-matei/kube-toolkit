@@ -30,7 +30,7 @@ func newVersionCmd(out io.Writer) *cobra.Command {
 		Short: versionUsage,
 		Long:  versionUsage,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			setupConnection(cmd, args)
+			setupConnection(cmd)
 
 			return versionCmd.run()
 		},

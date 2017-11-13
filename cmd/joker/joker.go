@@ -56,7 +56,7 @@ func newRootCmd(out io.Writer, in io.Reader) *cobra.Command {
 	return cmd
 }
 
-func setupConnection(c *cobra.Command, args []string) error {
+func setupConnection(c *cobra.Command) error {
 	if gothamHost == "" {
 		clientset, config, err := getKubeClient(kubeContext)
 		if err != nil {
