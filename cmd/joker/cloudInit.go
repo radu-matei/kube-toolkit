@@ -29,7 +29,7 @@ func newCloudInitCmd(out io.Writer) *cobra.Command {
 		Short: cloudInitUsage,
 		Long:  cloudInitUsage,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			setupConnection(cmd)
+			setupConnection()
 
 			conn, err := joker.GetGRPCConnection(gothamHost)
 			if err != nil {
