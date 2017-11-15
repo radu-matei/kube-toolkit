@@ -51,6 +51,7 @@ func newRootCmd(out io.Writer, in io.Reader) *cobra.Command {
 	cmd.AddCommand(
 		newVersionCmd(out),
 		newCloudInitCmd(out),
+		newAzCmd(out),
 	)
 
 	return cmd
