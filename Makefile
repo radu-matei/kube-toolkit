@@ -6,16 +6,17 @@ protoc_location = pkg/rpc
 GIT_COMMIT = $(shell git rev-parse HEAD)
 SEMVER = "v0.1"
 
-JOKER_CMD_PATH = cmd/joker
-GOTHAM_CMD_PATH = cmd/gotham
+KTK_CMD_PATH = cmd/ktk
+KTKD_CMD_PATH = cmd/ktkd
 
-JOKER_BINARY_NAME = joker
-GOTHAM_BINARY_NAME = gotham
+KTK_BINARY_NAME = ktk
+KTKD_BINARY_NAME = ktkd
 
-GOTHAM_LINUX_BINARY = gotham-linux
+KTK_LINUX_BINARY = ktk-linux
+KTKD_LINUX_BINARY = ktkd-linux
 
 OUTPUT_DIR = bin
-VERSION_PACKAGE = github.com/radu-matei/joker/pkg/version
+VERSION_PACKAGE = github.com/radu-matei/kube-toolkit/pkg/version
 LDFLAGS += -X $(VERSION_PACKAGE).GitCommit=${GIT_COMMIT}
 LDFLAGS += -X $(VERSION_PACKAGE).SemVer=${SEMVER}
 
@@ -25,25 +26,30 @@ rpc:
 
 .PHONY: bin
 bin:
-	$(MAKE) joker && \
-	$(MAKE) gotham
+	$(MAKE) ktk && \
+	$(MAKE) ktkd
 
-.PHONY: joker
-joker:
-	cd $(JOKER_CMD_PATH) && \
-	go build -ldflags '$(LDFLAGS)' -o ../../$(OUTPUT_DIR)/$(JOKER_BINARY_NAME)
+.PHONY: ktk
+ktk:
+	cd $(KTK_CMD_PATH) && \
+	go build -ldflags '$(LDFLAGS)' -o ../../$(OUTPUT_DIR)/$(KTK_BINARY_NAME)
 
-.PHONY: gotham
-gotham:
-	cd $(GOTHAM_CMD_PATH) && \
-	go build -ldflags '$(LDFLAGS)' -o ../../$(OUTPUT_DIR)/$(GOTHAM_BINARY_NAME)
+.PHONY: ktkd
+ktkd:
+	cd $(KTKD_CMD_PATH) && \
+	go build -ldflags '$(LDFLAGS)' -o ../../$(OUTPUT_DIR)/$(KTKD_BINARY_NAME)
 
 .PHONY: clean
 clean:
 	rm -rf bin/
 
-.PHONY: gotham-linux
-gotham-linux:
-	cd $(GOTHAM_CMD_PATH) && \
-	GOOS=linux go build -ldflags '$(LDFLAGS)' -o ../../$(OUTPUT_DIR)/$(GOTHAM_LINUX_BINARY)
+.PHONY: ktk-linux
+ktk-linux:
+	cd $(KTK_CMD_PATH) && \
+	GOOS=linux go build -ldflags '$(LDFLAGS)' -o ../../$(OUTPUT_DIR)/$(KTK_LINUX_BINARY)
+
+.PHONY: ktkd-linux
+ktkd-linux:
+	cd $(KTKD_CMD_PATH) && \
+	GOOS=linux go build -ldflags '$(LDFLAGS)' -o ../../$(OUTPUT_DIR)/$(KTKD_LINUX_BINARY)
 	

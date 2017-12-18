@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package rpc;
 
-service Joker {
+service KTK {
 	rpc GetVersion(Empty) returns (Version){}
-	rpc InitializeCloud(CloudConfig) returns(stream CloudInitStream){}
+	rpc ServerStream(Empty) returns(stream StreamingMessage){}
 }
 
 message Version {
@@ -12,17 +12,7 @@ message Version {
 	string git_commit = 2;
 }
 
-message CloudConfig {
-	cloud cloud_provider = 1;
-}
-
-enum cloud {
-	UNKNOWN = 0;
-	AWS = 1;
-	AZURE = 2;
-	GCP = 3;
-}
-message CloudInitStream {
+message StreamingMessage {
 	string message = 1;
 }
 

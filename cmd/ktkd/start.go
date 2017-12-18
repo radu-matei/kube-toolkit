@@ -3,13 +3,13 @@ package main
 import (
 	"io"
 
-	"github.com/radu-matei/joker/pkg/gotham"
+	"github.com/radu-matei/kube-toolkit/pkg/ktkd"
 	"github.com/spf13/cobra"
 	"golang.org/x/net/context"
 )
 
 var (
-	startUsage = "starts the Gotham server"
+	startUsage = "starts the ktkd server"
 
 	listenAddress string
 )
@@ -32,16 +32,16 @@ func newStartCmd(out io.Writer) *cobra.Command {
 	}
 
 	flags := cmd.Flags()
-	flags.StringVar(&listenAddress, "listen-addr", "0.0.0.0:10000", "the Gotham server listen address")
+	flags.StringVar(&listenAddress, "listen-addr", "0.0.0.0:10000", "the ktkd server listen address")
 
 	return cmd
 }
 
 func (cmd *startCmd) run() error {
 
-	cfg := &gotham.ServerConfig{
+	cfg := &ktkd.ServerConfig{
 		ListenAddress: listenAddress,
 	}
 
-	return gotham.NewServer(cfg).Serve(context.Background())
+	return ktkd.NewServer(cfg).Serve(context.Background())
 }

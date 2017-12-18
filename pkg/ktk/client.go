@@ -1,4 +1,4 @@
-package joker
+package ktk
 
 import (
 	"context"
@@ -8,35 +8,35 @@ import (
 	"google.golang.org/grpc"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/radu-matei/joker/pkg/rpc"
+	"github.com/radu-matei/kube-toolkit/pkg/rpc"
 )
 
-// ClientConfig contains all configuration for the Joker client
+// ClientConfig contains all configuration for the ktk client
 type ClientConfig struct {
-	GothamHost string
-	Stdout     io.Writer
-	Stderr     io.Writer
+	KTKDHost string
+	Stdout   io.Writer
+	Stderr   io.Writer
 }
 
 // Client contains all necessary information to
-// connect to the Gotham server
+// connect to the ktkd server
 type Client struct {
 	Config *ClientConfig
-	RPC    rpc.JokerClient
+	RPC    rpc.KTKClient
 }
 
-// NewClient returns a new instance of the Joker client
+// NewClient returns a new instance of the ktk client
 func NewClient(cfg *ClientConfig, conn *grpc.ClientConn) *Client {
 	var opts []grpc.DialOption
 	opts = append(opts, grpc.WithInsecure())
 
 	return &Client{
 		Config: cfg,
-		RPC:    rpc.NewJokerClient(conn),
+		RPC:    rpc.NewKTKClient(conn),
 	}
 }
 
-// GetVersion returns the Gotham version
+// GetVersion returns the ktk version
 func (client *Client) GetVersion(ctx context.Context) (*rpc.Version, error) {
 
 	// TODO - remove this once google.protobuf.empty is used
@@ -45,13 +45,14 @@ func (client *Client) GetVersion(ctx context.Context) (*rpc.Version, error) {
 	return client.RPC.GetVersion(ctx, empty)
 }
 
-// InitializeCloud initializes a cloud
-func (client *Client) InitializeCloud(ctx context.Context, cfg *rpc.CloudConfig, opts ...grpc.CallOption) error {
+// ServerStream starts a stream from the server
+func (client *Client) ServerStream(ctx context.Context, opts ...grpc.CallOption) error {
 	log.Debugf("called InitializeCloud client method...")
+	empty := &rpc.Empty{}
 
-	stream, err := client.RPC.InitializeCloud(ctx, cfg)
+	stream, err := client.RPC.ServerStream(ctx, empty)
 	if err != nil {
-		log.Fatalf("cannot initialize cloud: %v", err)
+		log.Fatalf("cannot start server stream: %v", err)
 		return err
 	}
 
@@ -71,9 +72,9 @@ func (client *Client) InitializeCloud(ctx context.Context, cfg *rpc.CloudConfig,
 }
 
 //GetGRPCConnection returns a new grpc connection
-func GetGRPCConnection(gothamHost string) (conn *grpc.ClientConn, err error) {
-	if conn, err = grpc.Dial(gothamHost, grpc.WithInsecure()); err != nil {
-		return nil, fmt.Errorf("failed to dial %q: %v", gothamHost, err)
+func GetGRPCConnection(ktkdHost string) (conn *grpc.ClientConn, err error) {
+	if conn, err = grpc.Dial(ktkdHost, grpc.WithInsecure()); err != nil {
+		return nil, fmt.Errorf("failed to dial %q: %v", ktkdHost, err)
 	}
 	return conn, nil
 }

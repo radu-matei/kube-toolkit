@@ -1,4 +1,4 @@
-package gotham
+package ktkd
 
 import (
 	"fmt"
@@ -7,24 +7,24 @@ import (
 	"time"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/radu-matei/joker/pkg/rpc"
-	"github.com/radu-matei/joker/pkg/version"
+	"github.com/radu-matei/kube-toolkit/pkg/rpc"
+	"github.com/radu-matei/kube-toolkit/pkg/version"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 )
 
-// ServerConfig contains all configuration for the Gotham server
+// ServerConfig contains all configuration for the ktkd server
 type ServerConfig struct {
 	ListenAddress string
 }
 
-// Server contains all methods and config for the Gotham server
+// Server contains all methods and config for the ktkd server
 type Server struct {
 	Config *ServerConfig
 	RPC    *grpc.Server
 }
 
-// NewServer returns a new instance of the Gotham server
+// NewServer returns a new instance of the ktkd server
 func NewServer(cfg *ServerConfig) *Server {
 	return &Server{
 		Config: cfg,
@@ -40,7 +40,7 @@ func (server *Server) Serve(ctx context.Context) error {
 		return fmt.Errorf("failed to start listening: %v", err)
 	}
 
-	rpc.RegisterJokerServer(server.RPC, server)
+	rpc.RegisterKTKServer(server.RPC, server)
 
 	_, cancel := context.WithCancel(ctx)
 	var wg sync.WaitGroup
@@ -72,17 +72,17 @@ func (server *Server) Serve(ctx context.Context) error {
 
 // GetVersion returns the current version of the server.
 func (server *Server) GetVersion(ctx context.Context, _ *rpc.Empty) (*rpc.Version, error) {
-	log.Debugf("executing gotham version")
+	log.Debugf("executing ktkd version")
 	return &rpc.Version{
 		SemVer:    version.SemVer,
 		GitCommit: version.GitCommit}, nil
 }
 
-// InitializeCloud initializes a cloud
-func (server *Server) InitializeCloud(cfg *rpc.CloudConfig, stream rpc.Joker_InitializeCloudServer) error {
-	log.Debugf("received InitializeCloud server method with cfg: %s", cfg.CloudProvider.String())
+// ServerStream starts a new stream from the server
+func (server *Server) ServerStream(_ *rpc.Empty, stream rpc.KTK_ServerStreamServer) error {
+	log.Debugf("received server stream command")
 	for i := 0; i < 5; i++ {
-		err := stream.Send(&rpc.CloudInitStream{
+		err := stream.Send(&rpc.StreamingMessage{
 			Message: fmt.Sprintf("Sending stream back to client, iteration: %d", i),
 		})
 		if err != nil {

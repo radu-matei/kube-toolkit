@@ -13,22 +13,22 @@ import (
 	podutil "k8s.io/kubernetes/pkg/api/v1/pod"
 )
 
-//New returns a tunnel to the Gotham pod.
+//New returns a tunnel to the ktkd pod.
 func New(clientset *kubernetes.Clientset, config *restclient.Config, namespace string) (*kube.Tunnel, error) {
-	podName, err := getGothamPodName(clientset, namespace)
+	podName, err := getKTKDPodName(clientset, namespace)
 	if err != nil {
 		return nil, err
 	}
 	log.Debugf("found pod: %s", podName)
 
-	const gothamPort = 10000
-	t := kube.NewTunnel(clientset.CoreV1().RESTClient(), config, namespace, podName, gothamPort)
+	const ktkdPort = 10000
+	t := kube.NewTunnel(clientset.CoreV1().RESTClient(), config, namespace, podName, ktkdPort)
 	return t, t.ForwardPort()
 }
 
-func getGothamPodName(clientset *kubernetes.Clientset, namespace string) (string, error) {
+func getKTKDPodName(clientset *kubernetes.Clientset, namespace string) (string, error) {
 	// TODO use a const for labels
-	selector := labels.Set{"app": "gotham", "name": "gotham"}.AsSelector()
+	selector := labels.Set{"app": "ktkd", "name": "ktkd"}.AsSelector()
 	pod, err := getFirstRunningPod(clientset, selector, namespace)
 	if err != nil {
 		return "", err
@@ -43,12 +43,12 @@ func getFirstRunningPod(clientset *kubernetes.Clientset, selector labels.Selecto
 		return nil, err
 	}
 	if len(pods.Items) < 1 {
-		return nil, fmt.Errorf("could not find gotham")
+		return nil, fmt.Errorf("could not find ktkd")
 	}
 	for _, p := range pods.Items {
 		if podutil.IsPodReady(&p) {
 			return &p, nil
 		}
 	}
-	return nil, fmt.Errorf("could not find a ready gotham pod")
+	return nil, fmt.Errorf("could not find a ready ktkd pod")
 }

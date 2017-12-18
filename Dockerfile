@@ -1,8 +1,8 @@
 FROM alpine
 
-COPY bin/gotham-linux .
+COPY bin/ktkd-linux .
 
 EXPOSE 10000
 
-ENTRYPOINT ["./gotham-linux"]
+ENTRYPOINT ["./ktkd-linux"]
 CMD ["start"]
