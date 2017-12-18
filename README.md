@@ -1,5 +1,5 @@
-kube-toolkit  - Toolkit for creating gRPC-based CLIs for Kubernetes in Go 
-=========================================================================
+kube-toolkit  - https://radu-matei.com/blog/kube-toolkit/
+==========================================================
 
 ![](https://raw.githubusercontent.com/ashleymcnamara/gophers/master/BATMAN_GOPHER.png)
 
