@@ -82,7 +82,7 @@ func (server *Server) GetVersion(ctx context.Context, _ *rpc.Empty) (*rpc.Versio
 func (server *Server) ServerStream(_ *rpc.Empty, stream rpc.KTK_ServerStreamServer) error {
 	log.Debugf("received server stream command")
 	for i := 0; i < 5; i++ {
-		err := stream.Send(&rpc.StreamingMessage{
+		err := stream.Send(&rpc.Message{
 			Message: fmt.Sprintf("Sending stream back to client, iteration: %d", i),
 		})
 		if err != nil {
