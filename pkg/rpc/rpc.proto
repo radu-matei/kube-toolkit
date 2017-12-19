@@ -4,7 +4,7 @@ package rpc;
 
 service KTK {
 	rpc GetVersion(Empty) returns (Version){}
-	rpc ServerStream(Empty) returns(stream StreamingMessage){}
+	rpc ServerStream(Empty) returns(stream Message){}
 }
 
 message Version {
@@ -12,7 +12,7 @@ message Version {
 	string git_commit = 2;
 }
 
-message StreamingMessage {
+message Message {
 	string message = 1;
 }
 
