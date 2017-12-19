@@ -44,8 +44,6 @@ func newVersionCmd(out io.Writer) *cobra.Command {
 
 func (cmd *versionCmd) run() error {
 
-	log.Debugf("making request to: %s", ktkdHost)
-
 	conn, err := ktk.GetGRPCConnection(ktkdHost)
 	if err != nil {
 		log.Fatalf("cannot create grpc connection: %v", err)
