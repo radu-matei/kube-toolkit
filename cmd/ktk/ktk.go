@@ -7,12 +7,9 @@ import (
 
 	"google.golang.org/grpc"
 
-	"k8s.io/client-go/kubernetes"
-	restclient "k8s.io/client-go/rest"
-	"k8s.io/client-go/tools/clientcmd"
-
 	log "github.com/Sirupsen/logrus"
 	"github.com/kubernetes/helm/pkg/kube"
+	"github.com/radu-matei/kube-toolkit/pkg/k8s"
 	"github.com/radu-matei/kube-toolkit/pkg/ktk"
 	"github.com/radu-matei/kube-toolkit/pkg/portforwarder"
 	"github.com/spf13/cobra"
@@ -44,12 +41,14 @@ func newRootCmd(out io.Writer, in io.Reader) *cobra.Command {
 		},
 	}
 
+	kubeconfig = getEnvVarOrExit("KUBECONFIG")
+
 	flags := cmd.PersistentFlags()
 	flags.BoolVar(&flagDebug, "debug", false, "enable verbose output")
-	flags.StringVar(&kubeconfig, "kubeconfig", "", "kubeconfig file to use")
 	flags.StringVar(&ktkdHost, "host", "", "address of ktkd server")
 
 	cmd.AddCommand(
+		newInitCmd(out),
 		newVersionCmd(out),
 		newServerStreamCmd(out),
 	)
@@ -59,7 +58,7 @@ func newRootCmd(out io.Writer, in io.Reader) *cobra.Command {
 
 func setupConnection() error {
 	if ktkdHost == "" {
-		clientset, config, err := getKubeClient(kubeconfig)
+		clientset, config, err := k8s.GetKubeClient(kubeconfig)
 		if err != nil {
 			return err
 		}
@@ -73,25 +72,7 @@ func setupConnection() error {
 		log.Debugf("Created tunnel using local port: '%d'", ktkdTunnel.Local)
 	}
 
-	log.Debugf("SERVER: %q", ktkdHost)
 	return nil
-}
-
-// getKubeClient is a convenience method for creating kubernetes config and client
-// for a given kubeconfig
-func getKubeClient(kubeconfig string) (*kubernetes.Clientset, *restclient.Config, error) {
-	log.Debugf("getting kube client using Kubernetes kubeconfig: %v", kubeconfig)
-
-	config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
-	if err != nil {
-		return nil, nil, fmt.Errorf("could not get kubernetes config from kubeconfig '%s': %v", kubeconfig, err)
-	}
-
-	client, err := kubernetes.NewForConfig(config)
-	if err != nil {
-		return nil, nil, fmt.Errorf("could not get kubernetes client: %s", err)
-	}
-	return client, config, nil
 }
 
 func main() {
@@ -110,7 +91,6 @@ func teardown() {
 }
 
 func ensureKTKClient(client *ktk.Client, conn *grpc.ClientConn) *ktk.Client {
-	log.Debugf("passing ktkdHost: %s", ktkdHost)
 	cfg := &ktk.ClientConfig{
 		KTKDHost: ktkdHost,
 		Stdout:   os.Stdout,
@@ -118,4 +98,13 @@ func ensureKTKClient(client *ktk.Client, conn *grpc.ClientConn) *ktk.Client {
 	}
 
 	return ktk.NewClient(cfg, conn)
+}
+
+func getEnvVarOrExit(varName string) string {
+	value := os.Getenv(varName)
+	if value == "" {
+		log.Fatalf("missing environment variable %s\n", varName)
+	}
+
+	return value
 }
