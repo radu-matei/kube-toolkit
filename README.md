@@ -59,6 +59,10 @@ On Windows:
 
 This will automatically create a deployment in your Kubernetes cluster with the `ktkd` server, and you can interact with any command you might have created.
 
+
+> You can also choose to remove the `init` and `reset` commands - this will **drastically** reduce the client binary size!
+
+
 Next step
 ----------
 
