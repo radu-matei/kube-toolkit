@@ -46,6 +46,7 @@ func (cmd *initCmd) run() error {
 	if err != nil {
 		return fmt.Errorf("cannot create deployment: %v", err)
 	}
+	fmt.Printf("Created ktkd deployment")
 
 	return nil
 }

@@ -41,6 +41,7 @@ func (cmd *resetCmd) run() error {
 	if err != nil {
 		return fmt.Errorf("cannot delete deployment: %v", err)
 	}
+	fmt.Println("Deleted ktkd deployment")
 
 	return nil
 }
