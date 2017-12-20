@@ -5,7 +5,6 @@ import (
 	"io"
 
 	"github.com/radu-matei/kube-toolkit/pkg/k8s"
-
 	"github.com/radu-matei/kube-toolkit/pkg/ktk"
 	"github.com/spf13/cobra"
 )

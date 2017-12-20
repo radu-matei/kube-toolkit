@@ -5,10 +5,9 @@ import (
 	"fmt"
 	"io"
 
-	"google.golang.org/grpc"
-
 	log "github.com/Sirupsen/logrus"
 	"github.com/radu-matei/kube-toolkit/pkg/rpc"
+	"google.golang.org/grpc"
 )
 
 // ClientConfig contains all configuration for the ktk client
