@@ -4,7 +4,7 @@ protoc_location = pkg/rpc
 
 
 GIT_COMMIT = $(shell git rev-parse HEAD)
-SEMVER = "v0.1"
+SEMVER = "v0.3.1"
 
 KTK_CMD_PATH = cmd/ktk
 KTKD_CMD_PATH = cmd/ktkd
