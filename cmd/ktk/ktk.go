@@ -5,14 +5,13 @@ import (
 	"io"
 	"os"
 
-	"google.golang.org/grpc"
-
 	log "github.com/Sirupsen/logrus"
 	"github.com/kubernetes/helm/pkg/kube"
 	"github.com/radu-matei/kube-toolkit/pkg/k8s"
 	"github.com/radu-matei/kube-toolkit/pkg/ktk"
 	"github.com/radu-matei/kube-toolkit/pkg/portforwarder"
 	"github.com/spf13/cobra"
+	"google.golang.org/grpc"
 )
 
 var (
@@ -49,6 +48,7 @@ func newRootCmd(out io.Writer, in io.Reader) *cobra.Command {
 
 	cmd.AddCommand(
 		newInitCmd(out),
+		newResetCmd(out),
 		newVersionCmd(out),
 		newServerStreamCmd(out),
 	)

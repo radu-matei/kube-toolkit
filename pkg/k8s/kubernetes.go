@@ -29,6 +29,26 @@ func GetKubeClient(kubeconfig string) (*kubernetes.Clientset, *restclient.Config
 	return clientset, config, nil
 }
 
+// DeleteDeployment deletes a deployment from the cluster
+func DeleteDeployment(kubeconfig, deployment string) error {
+	clientset, _, err := GetKubeClient(kubeconfig)
+	if err != nil {
+		return fmt.Errorf("cannot get clientset: %v", err)
+	}
+
+	deploymentsClient := clientset.AppsV1beta1().Deployments(v1.NamespaceDefault)
+
+	deletePolicy := metav1.DeletePropagationForeground
+	err = deploymentsClient.Delete(deployment, &metav1.DeleteOptions{
+		PropagationPolicy: &deletePolicy,
+	})
+	if err != nil {
+		return fmt.Errorf("cannot delete deployment: %v", err)
+	}
+
+	return nil
+}
+
 // CreateDeployment creates a new deployment in the cluster
 func CreateDeployment(kubeconfig, image, name string) error {
 
