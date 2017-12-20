@@ -30,6 +30,54 @@ In order to communicate with the cluster you need to pass the `kubeconfig` file,
 
 > Please note that there are still lots of things left to add, such as SSL, RBAC support or state management - you are more than welcome to contribute in any way to the project!
 
+
+Getting started
+---------------
+
+First, you need to clone the repo and `make ktk`.
+
+> You can also [check the releases page for a binary for your OS - however, it is not guaranteed that you will find an up-to-date version](https://github.com/radu-matei/kube-toolkit/releases).
+
+Next, you need to set an environment variable that points to your kube config file, then excecute the `init` function:
+
+On Linux / macOS:
+
+`export KUBECONFIG=<path-to-kubeconfig-file>`
+
+`ktk init --docker-image radumatei/ktkd`:
+
+![](docs/img/init.png)
+
+On Windows:
+
+`$Env:KUBECONFIG=<path-to-kubeconfig-file>`
+
+`ktk.exe init --docker-image radumatei/ktkd`:
+
+![](docs/img/init-win.png)
+
+
+This will automatically create a deployment in your Kubernetes cluster with the `ktkd` server, and you can interact with any command you might have created.
+
+Next step
+----------
+
+Now that you understood how all things fit together, you need to: 
+
+- write some commands (step by step docs on how to do it soon - basically mirror what the `version` does)
+
+- `make ktkd-linux` - this will build the `ktkd` Linux binary
+
+- `docker build -t <your-username>/ktkd` - create container image with the new `ktkd-linux` binary
+
+- `docker push <your-username>/ktkd` - push the image to Docker Hub
+
+- `ktk reset` - delete the current `ktkd` deployment from your cluster
+
+- `ktk init --docker-image <your-username>/ktkd` - deploy the new version of the `ktkd` server
+
+- have fun!
+
 Disclaimer
 ----------
 This is not an official Microsoft project, and all credits go to the awesome people building Helm and Draft, on which kube-toolkit is based.
