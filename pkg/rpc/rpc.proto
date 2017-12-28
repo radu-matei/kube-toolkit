@@ -2,9 +2,16 @@ syntax = "proto3";
 
 package rpc;
 
+import "google/protobuf/empty.proto";
+import "google/api/annotations.proto";
+
 service KTK {
-	rpc GetVersion(Empty) returns (Version){}
-	rpc ServerStream(Empty) returns(stream Message){}
+	rpc GetVersion(google.protobuf.Empty) returns (Version){
+		option (google.api.http) = {
+            get: "/version"
+          };
+	}
+	rpc ServerStream(google.protobuf.Empty) returns(stream Message){}
 }
 
 message Version {
@@ -15,6 +22,3 @@ message Version {
 message Message {
 	string message = 1;
 }
-
-// TODO - remove this message type and use google.protobuf.Empty
-message Empty {}
