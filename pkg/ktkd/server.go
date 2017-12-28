@@ -7,6 +7,7 @@ import (
 	"time"
 
 	log "github.com/Sirupsen/logrus"
+	google_protobuf "github.com/golang/protobuf/ptypes/empty"
 	"github.com/radu-matei/kube-toolkit/pkg/rpc"
 	"github.com/radu-matei/kube-toolkit/pkg/version"
 	"golang.org/x/net/context"
@@ -71,7 +72,7 @@ func (server *Server) Serve(ctx context.Context) error {
 }
 
 // GetVersion returns the current version of the server.
-func (server *Server) GetVersion(ctx context.Context, _ *rpc.Empty) (*rpc.Version, error) {
+func (server *Server) GetVersion(ctx context.Context, _ *google_protobuf.Empty) (*rpc.Version, error) {
 	log.Debugf("executing ktkd version")
 	return &rpc.Version{
 		SemVer:    version.SemVer,
@@ -79,7 +80,7 @@ func (server *Server) GetVersion(ctx context.Context, _ *rpc.Empty) (*rpc.Versio
 }
 
 // ServerStream starts a new stream from the server
-func (server *Server) ServerStream(_ *rpc.Empty, stream rpc.KTK_ServerStreamServer) error {
+func (server *Server) ServerStream(_ *google_protobuf.Empty, stream rpc.KTK_ServerStreamServer) error {
 	log.Debugf("received server stream command")
 	for i := 0; i < 5; i++ {
 		err := stream.Send(&rpc.Message{

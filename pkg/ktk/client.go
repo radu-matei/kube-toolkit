@@ -6,6 +6,7 @@ import (
 	"io"
 
 	log "github.com/Sirupsen/logrus"
+	google_protobuf "github.com/golang/protobuf/ptypes/empty"
 	"github.com/radu-matei/kube-toolkit/pkg/rpc"
 	"google.golang.org/grpc"
 )
@@ -39,7 +40,7 @@ func NewClient(cfg *ClientConfig, conn *grpc.ClientConn) *Client {
 func (client *Client) GetVersion(ctx context.Context) (*rpc.Version, error) {
 
 	// TODO - remove this once google.protobuf.empty is used
-	empty := &rpc.Empty{}
+	empty := &google_protobuf.Empty{}
 
 	return client.RPC.GetVersion(ctx, empty)
 }
@@ -47,7 +48,7 @@ func (client *Client) GetVersion(ctx context.Context) (*rpc.Version, error) {
 // ServerStream starts a stream from the server
 func (client *Client) ServerStream(ctx context.Context, opts ...grpc.CallOption) error {
 	log.Debugf("called InitializeCloud client method...")
-	empty := &rpc.Empty{}
+	empty := &google_protobuf.Empty{}
 
 	stream, err := client.RPC.ServerStream(ctx, empty)
 	if err != nil {
