@@ -66,3 +66,7 @@ ktkd-linux:
 	cd $(KTKD_CMD_PATH) && \
 	GOOS=linux go build -ldflags '$(LDFLAGS)' -o ../../$(OUTPUT_DIR)/$(KTKD_LINUX_BINARY)
 	
+.PHONY: gateway-linux
+gateway-linux:
+	cd $(GATEWAY_CMD_PATH) && \
+	GOOS=linux go build -o ../../$(OUTPUT_DIR)/$(GATEWAY_LINUX_BINARY)
