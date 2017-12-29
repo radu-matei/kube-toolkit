@@ -56,6 +56,6 @@ func (cmd *proxyCmd) run() error {
 
 	for {
 		fmt.Printf("serving proxy on localhost:%d...\n", port)
-		time.Sleep(10 * time.Second) // or runtime.Gosched() or similar per @misterbee
+		time.Sleep(10 * time.Second)
 	}
 }
