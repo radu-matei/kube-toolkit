@@ -1,8 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"io"
 	"log"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -28,7 +32,7 @@ func newProxyCmd(out io.Writer) *cobra.Command {
 		Short: initUsage,
 		Long:  initUsage,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			err := setupConnection(8080)
+			err := setupConnection(remoteGatewayPort, port)
 			if err != nil {
 				log.Fatalf("cannot setup connection: %v", err)
 			}
@@ -43,7 +47,15 @@ func newProxyCmd(out io.Writer) *cobra.Command {
 }
 
 func (cmd *proxyCmd) run() error {
+	c := make(chan os.Signal, 2)
+	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
+	go func() {
+		<-c
+		os.Exit(1)
+	}()
 
-	time.Sleep(10 * time.Second)
-	return nil
+	for {
+		fmt.Printf("serving proxy on localhost:%d...\n", port)
+		time.Sleep(10 * time.Second) // or runtime.Gosched() or similar per @misterbee
+	}
 }
