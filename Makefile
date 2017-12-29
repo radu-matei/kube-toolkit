@@ -14,17 +14,17 @@ CLIENT_BINARY_NAME = ktk
 SERVER_BINARY_NAME = ktkd
 GATEWAY_BINARY_NAME = gateway
 
-CLIENT_LINUX_BINARY = ktk-linux
-SERVER_LINUX_BINARY = ktkd-linux
-GATEWAY_LINUX_BINARY = gateway-linux
-
+CLIENT_LINUX_BINARY = $(CLIENT_BINARY_NAME)-linux
+SERVER_LINUX_BINARY = $(SERVER_BINARY_NAME)-linux
+GATEWAY_LINUX_BINARY = $(GATEWAY_BINARY_NAME)-linux
 
 OUTPUT_DIR = bin
+
 VERSION_PACKAGE = github.com/radu-matei/kube-toolkit/pkg/version
 LDFLAGS += -X $(VERSION_PACKAGE).GitCommit=${GIT_COMMIT}
 LDFLAGS += -X $(VERSION_PACKAGE).SemVer=${SEMVER}
 
-PROTOBUF_INCLUDE_DIR = /usr/local/include
+PROTOBUF_INCLUDE_DIR = vendor/protobuf-include
 GRPC_GATEWAY_PROTO = vendor/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis
 
 .PHONY: rpc
