@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	initUsage = "deploys the ktkd server to your cluster"
+	initUsage = "deploys the server and gateway to your cluster"
 
 	serverImage  string
 	gatewayImage string
@@ -34,19 +34,19 @@ func newInitCmd(out io.Writer) *cobra.Command {
 	}
 
 	flags := cmd.PersistentFlags()
-	flags.StringVar(&serverImage, "docker-image", "", "docker image to use for ktkd deployment")
-	flags.StringVar(&gatewayImage, "gateway-image", "", "docker image to use for the gatewayw")
+	flags.StringVar(&serverImage, "server-image", "", "docker image to use for the server deployment")
+	flags.StringVar(&gatewayImage, "gateway-image", "", "docker image to use for the web gatewayw")
 
 	return cmd
 }
 
 func (cmd *initCmd) run() error {
 
-	err := k8s.CreateDeployment(kubeconfig, serverImage, gatewayImage, "ktkd")
+	err := k8s.CreateDeployment(kubeconfig, serverImage, gatewayImage, deploymentName)
 	if err != nil {
 		return fmt.Errorf("cannot create deployment: %v", err)
 	}
-	fmt.Printf("Created ktkd deployment")
+	fmt.Printf("Created the server deployment\n")
 
 	return nil
 }

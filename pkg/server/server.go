@@ -1,4 +1,4 @@
-package ktkd
+package server
 
 import (
 	"fmt"
@@ -14,19 +14,19 @@ import (
 	"google.golang.org/grpc"
 )
 
-// ServerConfig contains all configuration for the ktkd server
-type ServerConfig struct {
+// Config contains all configuration for the server
+type Config struct {
 	ListenAddress string
 }
 
-// Server contains all methods and config for the ktkd server
+// Server contains all methods and config for the server
 type Server struct {
-	Config *ServerConfig
+	Config *Config
 	RPC    *grpc.Server
 }
 
-// NewServer returns a new instance of the ktkd server
-func NewServer(cfg *ServerConfig) *Server {
+// NewServer returns a new instance of the server
+func NewServer(cfg *Config) *Server {
 	return &Server{
 		Config: cfg,
 		RPC:    grpc.NewServer(),
@@ -41,7 +41,7 @@ func (server *Server) Serve(ctx context.Context) error {
 		return fmt.Errorf("failed to start listening: %v", err)
 	}
 
-	rpc.RegisterKTKServer(server.RPC, server)
+	rpc.RegisterGRPCServer(server.RPC, server)
 
 	_, cancel := context.WithCancel(ctx)
 	var wg sync.WaitGroup
@@ -73,14 +73,14 @@ func (server *Server) Serve(ctx context.Context) error {
 
 // GetVersion returns the current version of the server.
 func (server *Server) GetVersion(ctx context.Context, _ *google_protobuf.Empty) (*rpc.Version, error) {
-	log.Debugf("executing ktkd version")
+	log.Debugf("executing GetVersion")
 	return &rpc.Version{
 		SemVer:    version.SemVer,
 		GitCommit: version.GitCommit}, nil
 }
 
 // ServerStream starts a new stream from the server
-func (server *Server) ServerStream(_ *google_protobuf.Empty, stream rpc.KTK_ServerStreamServer) error {
+func (server *Server) ServerStream(_ *google_protobuf.Empty, stream rpc.GRPC_ServerStreamServer) error {
 	log.Debugf("received server stream command")
 	for i := 0; i < 5; i++ {
 		err := stream.Send(&rpc.Message{

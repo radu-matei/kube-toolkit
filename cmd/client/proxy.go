@@ -29,8 +29,8 @@ func newProxyCmd(out io.Writer) *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "proxy",
-		Short: initUsage,
-		Long:  initUsage,
+		Short: proxyUsage,
+		Long:  proxyUsage,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			err := setupConnection(remoteGatewayPort, port)
 			if err != nil {
@@ -51,7 +51,7 @@ func (cmd *proxyCmd) run() error {
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 	go func() {
 		<-c
-		os.Exit(1)
+		os.Exit(0)
 	}()
 
 	for {

@@ -6,8 +6,8 @@ import (
 	"os"
 
 	log "github.com/Sirupsen/logrus"
+	"github.com/radu-matei/kube-toolkit/pkg/client"
 	"github.com/radu-matei/kube-toolkit/pkg/k8s"
-	"github.com/radu-matei/kube-toolkit/pkg/ktk"
 	"github.com/radu-matei/kube-toolkit/pkg/portforwarder"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
@@ -16,23 +16,24 @@ import (
 const (
 	remoteServerPort  = 10000
 	remoteGatewayPort = 8080
-
-	localRandomPort = 0
+	localRandomPort   = 0
 )
 
 var (
-	globalUsage = "ktk - the client-side component of your awesome Kubernetes tool"
+	globalUsage = "the client-side component of your awesome Kubernetes tool"
 
-	flagDebug  bool
+	flagDebug bool
+
 	kubeconfig string
-	ktkdHost   string
+	serverHost string
 
-	ktkdTunnel *k8s.Tunnel
+	deploymentName string
+
+	kubeTunnel *k8s.Tunnel
 )
 
 func newRootCmd(out io.Writer, in io.Reader) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:          "ktk",
 		Short:        globalUsage,
 		Long:         globalUsage,
 		SilenceUsage: true,
@@ -50,7 +51,8 @@ func newRootCmd(out io.Writer, in io.Reader) *cobra.Command {
 
 	flags := cmd.PersistentFlags()
 	flags.BoolVar(&flagDebug, "debug", false, "enable verbose output")
-	flags.StringVar(&ktkdHost, "host", "", "address of ktkd server")
+	flags.StringVar(&serverHost, "host", "", "address of the server")
+	flags.StringVar(&deploymentName, "name", "kube-toolkit", "kubernetes deployment name")
 
 	cmd.AddCommand(
 		newInitCmd(out),
@@ -64,19 +66,19 @@ func newRootCmd(out io.Writer, in io.Reader) *cobra.Command {
 }
 
 func setupConnection(remotePort, localPort int) error {
-	if ktkdHost == "" {
+	if serverHost == "" {
 		clientset, config, err := k8s.GetKubeClient(kubeconfig)
 		if err != nil {
 			return err
 		}
 
-		ktkdTunnel, err = portforwarder.New(clientset, config, "default", remotePort, localPort)
+		kubeTunnel, err = portforwarder.New(clientset, config, "default", deploymentName, remotePort, localPort)
 		if err != nil {
 			return err
 		}
 
-		ktkdHost = fmt.Sprintf("localhost:%d", ktkdTunnel.Local)
-		log.Debugf("Created tunnel using local port: '%d'", ktkdTunnel.Local)
+		serverHost = fmt.Sprintf("localhost:%d", kubeTunnel.Local)
+		log.Debugf("Created tunnel using local port: '%d'", kubeTunnel.Local)
 	}
 
 	return nil
@@ -91,20 +93,20 @@ func main() {
 
 // the tunnel appears to be already closed here
 func teardown() {
-	// if ktkdTunnel != nil {
-	// 	log.Debugf("Tearing down tunnel connection to ktkd...")
-	// 	ktkdTunnel. .Close()
+	// if kubeTunnel != nil {
+	// 	log.Debugf("Tearing down tunnel connection to server...")
+	// 	kubeTunnel.Close()
 	// }
 }
 
-func ensureKTKClient(client *ktk.Client, conn *grpc.ClientConn) *ktk.Client {
-	cfg := &ktk.ClientConfig{
-		KTKDHost: ktkdHost,
-		Stdout:   os.Stdout,
-		Stderr:   os.Stderr,
+func ensureGRPCClient(c *client.Client, conn *grpc.ClientConn) *client.Client {
+	cfg := &client.Config{
+		ServerHost: serverHost,
+		Stdout:     os.Stdout,
+		Stderr:     os.Stderr,
 	}
 
-	return ktk.NewClient(cfg, conn)
+	return client.NewClient(cfg, conn)
 }
 
 func getEnvVarOrExit(varName string) string {

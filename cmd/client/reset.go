@@ -4,18 +4,18 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/radu-matei/kube-toolkit/pkg/client"
 	"github.com/radu-matei/kube-toolkit/pkg/k8s"
-	"github.com/radu-matei/kube-toolkit/pkg/ktk"
 	"github.com/spf13/cobra"
 )
 
 var (
-	reset = "deletes the ktkd deployment from the Kubernetes cluster"
+	resetUsage = "deletes the server deployment from the Kubernetes cluster"
 )
 
 type resetCmd struct {
 	out    io.Writer
-	client *ktk.Client
+	client *client.Client
 }
 
 func newResetCmd(out io.Writer) *cobra.Command {
@@ -25,23 +25,26 @@ func newResetCmd(out io.Writer) *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "reset",
-		Short: initUsage,
-		Long:  initUsage,
+		Short: resetUsage,
+		Long:  resetUsage,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return initCmd.run()
 		},
 	}
+
+	flags := cmd.PersistentFlags()
+	flags.StringVar(&deploymentName, "name", "kube-toolkit", "docker image to use for the web gatewayw")
 
 	return cmd
 }
 
 func (cmd *resetCmd) run() error {
 
-	err := k8s.DeleteDeployment(kubeconfig, "ktkd")
+	err := k8s.DeleteDeployment(kubeconfig, deploymentName)
 	if err != nil {
 		return fmt.Errorf("cannot delete deployment: %v", err)
 	}
-	fmt.Println("Deleted ktkd deployment")
+	fmt.Println("Deleted server deployment")
 
 	return nil
 }

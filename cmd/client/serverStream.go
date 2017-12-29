@@ -5,7 +5,7 @@ import (
 	"io"
 	"log"
 
-	"github.com/radu-matei/kube-toolkit/pkg/ktk"
+	"github.com/radu-matei/kube-toolkit/pkg/client"
 	"github.com/spf13/cobra"
 )
 
@@ -15,7 +15,7 @@ var (
 
 type serverStreamCmd struct {
 	out    io.Writer
-	client *ktk.Client
+	client *client.Client
 }
 
 func newServerStreamCmd(out io.Writer) *cobra.Command {
@@ -30,13 +30,13 @@ func newServerStreamCmd(out io.Writer) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			setupConnection(remoteServerPort, localRandomPort)
 
-			conn, err := ktk.GetGRPCConnection(ktkdHost)
+			conn, err := client.GetGRPCConnection(serverHost)
 			if err != nil {
 				log.Fatalf("cannot create grpc connection: %v", err)
 			}
 			defer conn.Close()
 
-			serverStreamCmd.client = ensureKTKClient(serverStreamCmd.client, conn)
+			serverStreamCmd.client = ensureGRPCClient(serverStreamCmd.client, conn)
 			return serverStreamCmd.run()
 		},
 	}

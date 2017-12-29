@@ -6,18 +6,18 @@ import (
 	"io"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/radu-matei/kube-toolkit/pkg/ktk"
+	"github.com/radu-matei/kube-toolkit/pkg/client"
 	"github.com/radu-matei/kube-toolkit/pkg/version"
 	"github.com/spf13/cobra"
 )
 
 var (
-	versionUsage = "prints the ktk and ktkd version information"
+	versionUsage = "prints the client and server version information"
 )
 
 type versionCmd struct {
 	out    io.Writer
-	client *ktk.Client
+	client *client.Client
 }
 
 func newVersionCmd(out io.Writer) *cobra.Command {
@@ -44,19 +44,19 @@ func newVersionCmd(out io.Writer) *cobra.Command {
 
 func (cmd *versionCmd) run() error {
 
-	conn, err := ktk.GetGRPCConnection(ktkdHost)
+	conn, err := client.GetGRPCConnection(serverHost)
 	if err != nil {
 		log.Fatalf("cannot create grpc connection: %v", err)
 	}
 	defer conn.Close()
 
-	cmd.client = ensureKTKClient(cmd.client, conn)
+	cmd.client = ensureGRPCClient(cmd.client, conn)
 
-	ktkdVersion, err := cmd.client.GetVersion(context.Background())
+	serverVersion, err := cmd.client.GetVersion(context.Background())
 	if err != nil {
-		return fmt.Errorf("cannot get ktkd version: %v", err)
+		return fmt.Errorf("cannot get server version: %v", err)
 	}
-	fmt.Printf("ktk Semver: %s GitCommit: %s\n", version.SemVer, version.GitCommit)
-	fmt.Printf("ktkd SemVer:  %s Git Commit: %s\n", ktkdVersion.SemVer, ktkdVersion.GitCommit)
+	fmt.Printf("Client SemVer: %s Git Commit: %s\n", version.SemVer, version.GitCommit)
+	fmt.Printf("Server SemVer:  %s Git Commit: %s\n", serverVersion.SemVer, serverVersion.GitCommit)
 	return nil
 }

@@ -9,14 +9,13 @@ import (
 )
 
 var (
-	globalUsage = "ktkd - the server-side component of your awesome Kubernetes tool"
+	globalUsage = "the server-side component of your awesome Kubernetes tool"
 
 	flagDebug bool
 )
 
 func newRootCmd(out io.Writer, in io.Reader) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:          "ktkd",
 		Short:        globalUsage,
 		Long:         globalUsage,
 		SilenceUsage: true,
