@@ -28,7 +28,7 @@ func newServerStreamCmd(out io.Writer) *cobra.Command {
 		Short: serverStreamUsage,
 		Long:  serverStreamUsage,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			setupConnection()
+			setupConnection(remoteServerPort, localRandomPort)
 
 			conn, err := ktk.GetGRPCConnection(ktkdHost)
 			if err != nil {

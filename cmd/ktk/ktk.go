@@ -6,12 +6,18 @@ import (
 	"os"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/kubernetes/helm/pkg/kube"
 	"github.com/radu-matei/kube-toolkit/pkg/k8s"
 	"github.com/radu-matei/kube-toolkit/pkg/ktk"
 	"github.com/radu-matei/kube-toolkit/pkg/portforwarder"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
+)
+
+const (
+	remoteServerPort  = 10000
+	remoteGatewayPort = 8080
+
+	localRandomPort = 0
 )
 
 var (
@@ -21,7 +27,7 @@ var (
 	kubeconfig string
 	ktkdHost   string
 
-	ktkdTunnel *kube.Tunnel
+	ktkdTunnel *k8s.Tunnel
 )
 
 func newRootCmd(out io.Writer, in io.Reader) *cobra.Command {
@@ -48,6 +54,7 @@ func newRootCmd(out io.Writer, in io.Reader) *cobra.Command {
 
 	cmd.AddCommand(
 		newInitCmd(out),
+		newProxyCmd(out),
 		newResetCmd(out),
 		newVersionCmd(out),
 		newServerStreamCmd(out),
@@ -56,14 +63,14 @@ func newRootCmd(out io.Writer, in io.Reader) *cobra.Command {
 	return cmd
 }
 
-func setupConnection() error {
+func setupConnection(remotePort, localPort int) error {
 	if ktkdHost == "" {
 		clientset, config, err := k8s.GetKubeClient(kubeconfig)
 		if err != nil {
 			return err
 		}
 
-		ktkdTunnel, err = portforwarder.New(clientset, config, "default")
+		ktkdTunnel, err = portforwarder.New(clientset, config, "default", remotePort, localPort)
 		if err != nil {
 			return err
 		}

@@ -6,9 +6,9 @@
   branch = "master"
   name = "github.com/golang/protobuf"
 
-[[constraint]]
-  name = "github.com/kubernetes/helm"
-  version = "2.7.0"
+#[[constraint]]
+#  name = "github.com/kubernetes/helm"
+#  version = "2.7.0"
 
 [[constraint]]
   name = "github.com/spf13/cobra"

@@ -50,7 +50,7 @@ func DeleteDeployment(kubeconfig, deployment string) error {
 }
 
 // CreateDeployment creates a new deployment in the cluster
-func CreateDeployment(kubeconfig, image, name string) error {
+func CreateDeployment(kubeconfig, serverImage, gatewayImage, name string) error {
 
 	clientset, _, err := GetKubeClient(kubeconfig)
 	if err != nil {
@@ -76,7 +76,18 @@ func CreateDeployment(kubeconfig, image, name string) error {
 					Containers: []v1.Container{
 						{
 							Name:  name,
-							Image: image,
+							Image: serverImage,
+						},
+						{
+							Name:  fmt.Sprintf("%s-gateway", name),
+							Image: gatewayImage,
+							Ports: []v1.ContainerPort{
+								{
+									Name:          "http",
+									Protocol:      v1.ProtocolTCP,
+									ContainerPort: 8080,
+								},
+							},
 						},
 					},
 				},
@@ -90,6 +101,11 @@ func CreateDeployment(kubeconfig, image, name string) error {
 	}
 
 	return nil
+}
+
+// StartProxy starts a proxy to the gateway
+func StartProxy(localPort int) {
+
 }
 
 func int32Ptr(i int32) *int32 { return &i }

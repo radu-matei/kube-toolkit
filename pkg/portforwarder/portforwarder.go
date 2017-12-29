@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/kubernetes/helm/pkg/kube"
+	"github.com/radu-matei/kube-toolkit/pkg/k8s"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
@@ -14,16 +14,15 @@ import (
 )
 
 //New returns a tunnel to the ktkd pod.
-func New(clientset *kubernetes.Clientset, config *restclient.Config, namespace string) (*kube.Tunnel, error) {
+func New(clientset *kubernetes.Clientset, config *restclient.Config, namespace string, remotePort, localPort int) (*k8s.Tunnel, error) {
 	podName, err := getKTKDPodName(clientset, namespace)
 	if err != nil {
 		return nil, err
 	}
 	log.Debugf("found pod: %s", podName)
 
-	const ktkdPort = 10000
-	t := kube.NewTunnel(clientset.CoreV1().RESTClient(), config, namespace, podName, ktkdPort)
-	return t, t.ForwardPort()
+	t := k8s.NewTunnel(clientset.CoreV1().RESTClient(), config, namespace, podName, remotePort)
+	return t, t.ForwardPort(localPort)
 }
 
 func getKTKDPodName(clientset *kubernetes.Clientset, namespace string) (string, error) {
