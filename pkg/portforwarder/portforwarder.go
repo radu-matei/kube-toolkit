@@ -14,15 +14,15 @@ import (
 )
 
 //New returns a tunnel to the ktkd pod.
-func New(clientset *kubernetes.Clientset, config *restclient.Config, namespace string, port int) (*k8s.Tunnel, error) {
+func New(clientset *kubernetes.Clientset, config *restclient.Config, namespace string, remotePort, localPort int) (*k8s.Tunnel, error) {
 	podName, err := getKTKDPodName(clientset, namespace)
 	if err != nil {
 		return nil, err
 	}
 	log.Debugf("found pod: %s", podName)
 
-	t := k8s.NewTunnel(clientset.CoreV1().RESTClient(), config, namespace, podName, port)
-	return t, t.ForwardPort()
+	t := k8s.NewTunnel(clientset.CoreV1().RESTClient(), config, namespace, podName, remotePort)
+	return t, t.ForwardPort(localPort)
 }
 
 func getKTKDPodName(clientset *kubernetes.Clientset, namespace string) (string, error) {
