@@ -48,6 +48,7 @@ func newRootCmd(out io.Writer, in io.Reader) *cobra.Command {
 
 	cmd.AddCommand(
 		newInitCmd(out),
+		newProxyCmd(out),
 		newResetCmd(out),
 		newVersionCmd(out),
 		newServerStreamCmd(out),
@@ -56,14 +57,14 @@ func newRootCmd(out io.Writer, in io.Reader) *cobra.Command {
 	return cmd
 }
 
-func setupConnection() error {
+func setupConnection(port int) error {
 	if ktkdHost == "" {
 		clientset, config, err := k8s.GetKubeClient(kubeconfig)
 		if err != nil {
 			return err
 		}
 
-		ktkdTunnel, err = portforwarder.New(clientset, config, "default")
+		ktkdTunnel, err = portforwarder.New(clientset, config, "default", port)
 		if err != nil {
 			return err
 		}
