@@ -1,0 +1,7 @@
+FROM scratch
+
+COPY bin/gateway-linux .
+
+EXPOSE 8080
+
+ENTRYPOINT ["./gateway-linux"]
