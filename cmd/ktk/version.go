@@ -30,7 +30,7 @@ func newVersionCmd(out io.Writer) *cobra.Command {
 		Short: versionUsage,
 		Long:  versionUsage,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			err := setupConnection(10000)
+			err := setupConnection(remoteServerPort, localRandomPort)
 			if err != nil {
 				log.Fatalf("cannot setup connection: %v", err)
 			}

@@ -13,6 +13,13 @@ import (
 	"google.golang.org/grpc"
 )
 
+const (
+	remoteServerPort  = 10000
+	remoteGatewayPort = 8080
+
+	localRandomPort = 0
+)
+
 var (
 	globalUsage = "ktk - the client-side component of your awesome Kubernetes tool"
 
@@ -56,14 +63,14 @@ func newRootCmd(out io.Writer, in io.Reader) *cobra.Command {
 	return cmd
 }
 
-func setupConnection(port int) error {
+func setupConnection(remotePort, localPort int) error {
 	if ktkdHost == "" {
 		clientset, config, err := k8s.GetKubeClient(kubeconfig)
 		if err != nil {
 			return err
 		}
 
-		ktkdTunnel, err = portforwarder.New(clientset, config, "default", port)
+		ktkdTunnel, err = portforwarder.New(clientset, config, "default", remotePort, localPort)
 		if err != nil {
 			return err
 		}
