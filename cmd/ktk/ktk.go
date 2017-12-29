@@ -6,7 +6,6 @@ import (
 	"os"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/kubernetes/helm/pkg/kube"
 	"github.com/radu-matei/kube-toolkit/pkg/k8s"
 	"github.com/radu-matei/kube-toolkit/pkg/ktk"
 	"github.com/radu-matei/kube-toolkit/pkg/portforwarder"
@@ -21,7 +20,7 @@ var (
 	kubeconfig string
 	ktkdHost   string
 
-	ktkdTunnel *kube.Tunnel
+	ktkdTunnel *k8s.Tunnel
 )
 
 func newRootCmd(out io.Writer, in io.Reader) *cobra.Command {
