@@ -68,8 +68,8 @@ func CreateDeployment(kubeconfig, serverImage, gatewayImage, name string) error 
 			Template: v1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
 					Labels: map[string]string{
-						"app":  "ktkd",
-						"name": "ktkd",
+						"app":  name,
+						"name": name,
 					},
 				},
 				Spec: v1.PodSpec{

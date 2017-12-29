@@ -29,7 +29,7 @@ var _ status.Status
 var _ = runtime.String
 var _ = utilities.NewDoubleArray
 
-func request_KTK_GetVersion_0(ctx context.Context, marshaler runtime.Marshaler, client KTKClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_GRPC_GetVersion_0(ctx context.Context, marshaler runtime.Marshaler, client GRPCClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq empty.Empty
 	var metadata runtime.ServerMetadata
 
@@ -38,9 +38,9 @@ func request_KTK_GetVersion_0(ctx context.Context, marshaler runtime.Marshaler, 
 
 }
 
-// RegisterKTKHandlerFromEndpoint is same as RegisterKTKHandler but
+// RegisterGRPCHandlerFromEndpoint is same as RegisterGRPCHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
-func RegisterKTKHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
+func RegisterGRPCHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
 	conn, err := grpc.Dial(endpoint, opts...)
 	if err != nil {
 		return err
@@ -60,23 +60,23 @@ func RegisterKTKHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, 
 		}()
 	}()
 
-	return RegisterKTKHandler(ctx, mux, conn)
+	return RegisterGRPCHandler(ctx, mux, conn)
 }
 
-// RegisterKTKHandler registers the http handlers for service KTK to "mux".
+// RegisterGRPCHandler registers the http handlers for service GRPC to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
-func RegisterKTKHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
-	return RegisterKTKHandlerClient(ctx, mux, NewKTKClient(conn))
+func RegisterGRPCHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
+	return RegisterGRPCHandlerClient(ctx, mux, NewGRPCClient(conn))
 }
 
-// RegisterKTKHandler registers the http handlers for service KTK to "mux".
-// The handlers forward requests to the grpc endpoint over the given implementation of "KTKClient".
-// Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "KTKClient"
+// RegisterGRPCHandler registers the http handlers for service GRPC to "mux".
+// The handlers forward requests to the grpc endpoint over the given implementation of "GRPCClient".
+// Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "GRPCClient"
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
-// "KTKClient" to call the correct interceptors.
-func RegisterKTKHandlerClient(ctx context.Context, mux *runtime.ServeMux, client KTKClient) error {
+// "GRPCClient" to call the correct interceptors.
+func RegisterGRPCHandlerClient(ctx context.Context, mux *runtime.ServeMux, client GRPCClient) error {
 
-	mux.Handle("GET", pattern_KTK_GetVersion_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_GRPC_GetVersion_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		if cn, ok := w.(http.CloseNotifier); ok {
@@ -94,14 +94,14 @@ func RegisterKTKHandlerClient(ctx context.Context, mux *runtime.ServeMux, client
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_KTK_GetVersion_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_GRPC_GetVersion_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_KTK_GetVersion_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_GRPC_GetVersion_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -109,9 +109,9 @@ func RegisterKTKHandlerClient(ctx context.Context, mux *runtime.ServeMux, client
 }
 
 var (
-	pattern_KTK_GetVersion_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"version"}, ""))
+	pattern_GRPC_GetVersion_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"version"}, ""))
 )
 
 var (
-	forward_KTK_GetVersion_0 = runtime.ForwardResponseMessage
+	forward_GRPC_GetVersion_0 = runtime.ForwardResponseMessage
 )

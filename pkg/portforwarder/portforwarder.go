@@ -13,9 +13,9 @@ import (
 	podutil "k8s.io/kubernetes/pkg/api/v1/pod"
 )
 
-//New returns a tunnel to the ktkd pod.
-func New(clientset *kubernetes.Clientset, config *restclient.Config, namespace string, remotePort, localPort int) (*k8s.Tunnel, error) {
-	podName, err := getKTKDPodName(clientset, namespace)
+//New returns a tunnel to the server pod.
+func New(clientset *kubernetes.Clientset, config *restclient.Config, namespace, deploymentName string, remotePort, localPort int) (*k8s.Tunnel, error) {
+	podName, err := getServerPodName(clientset, namespace, deploymentName)
 	if err != nil {
 		return nil, err
 	}
@@ -25,9 +25,9 @@ func New(clientset *kubernetes.Clientset, config *restclient.Config, namespace s
 	return t, t.ForwardPort(localPort)
 }
 
-func getKTKDPodName(clientset *kubernetes.Clientset, namespace string) (string, error) {
+func getServerPodName(clientset *kubernetes.Clientset, namespace, deploymentName string) (string, error) {
 	// TODO use a const for labels
-	selector := labels.Set{"app": "ktkd", "name": "ktkd"}.AsSelector()
+	selector := labels.Set{"app": deploymentName, "name": deploymentName}.AsSelector()
 	pod, err := getFirstRunningPod(clientset, selector, namespace)
 	if err != nil {
 		return "", err
@@ -42,12 +42,12 @@ func getFirstRunningPod(clientset *kubernetes.Clientset, selector labels.Selecto
 		return nil, err
 	}
 	if len(pods.Items) < 1 {
-		return nil, fmt.Errorf("could not find ktkd")
+		return nil, fmt.Errorf("could not find server")
 	}
 	for _, p := range pods.Items {
 		if podutil.IsPodReady(&p) {
 			return &p, nil
 		}
 	}
-	return nil, fmt.Errorf("could not find a ready ktkd pod")
+	return nil, fmt.Errorf("could not find a ready server pod")
 }
