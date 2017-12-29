@@ -1,0 +1,33 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/golang:1.9.2
+
+    working_directory: /go/src/github.com/radu-matei/kube-toolkit
+    steps:
+      - checkout
+
+      - run:
+        name: get protoc compiler
+        command: |
+          cd /home/circleci
+          wget https://github.com/google/protobuf/releases/download/v3.5.1/protoc-3.5.1-linux-x86_64.zip
+          unzip protoc-3.5.1-linux-x86_64.zip
+          export PATH=$PATH:/home/circleci/bin
+
+
+      - run:
+        name: get grpc-gateway deps
+        command: |
+          go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
+          go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
+          go get -u github.com/golang/protobuf/protoc-gen-go
+
+      - run:
+        name: make client
+        command: make client
+
+      - run:
+        name: make server
+        command: make server
