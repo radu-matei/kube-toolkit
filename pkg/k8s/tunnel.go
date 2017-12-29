@@ -64,7 +64,7 @@ func (t *Tunnel) Close() {
 }
 
 // ForwardPort opens a tunnel to a kubernetes pod
-func (t *Tunnel) ForwardPort() error {
+func (t *Tunnel) ForwardPort(localPort int) error {
 	// Build a url to the portforward endpoint
 	// example: http://localhost:8080/api/v1/namespaces/helm/pods/tiller-deploy-9itlq/portforward
 	u := t.client.Post().
@@ -79,7 +79,7 @@ func (t *Tunnel) ForwardPort() error {
 	}
 	dialer := spdy.NewDialer(upgrader, &http.Client{Transport: transport}, "POST", u)
 
-	local, err := getAvailablePort()
+	local, err := getAvailablePort(localPort)
 	if err != nil {
 		return fmt.Errorf("could not find an available port: %s", err)
 	}
@@ -105,8 +105,8 @@ func (t *Tunnel) ForwardPort() error {
 	}
 }
 
-func getAvailablePort() (int, error) {
-	l, err := net.Listen("tcp", ":0")
+func getAvailablePort(localPort int) (int, error) {
+	l, err := net.Listen("tcp", fmt.Sprintf(":%d", localPort))
 	if err != nil {
 		return 0, err
 	}
