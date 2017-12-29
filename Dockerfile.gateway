@@ -1,5 +1,6 @@
 FROM scratch
 
+# TODO - create build-time argument for binary name
 COPY bin/gateway-linux .
 
 EXPOSE 8080

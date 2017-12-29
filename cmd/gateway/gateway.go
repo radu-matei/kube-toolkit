@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	echoEndpoint = flag.String("backend", "localhost:10000", "endpoint of server")
+	serverEndpoint = flag.String("backend", "localhost:10000", "endpoint of server")
 )
 
 func run() error {
@@ -22,7 +22,7 @@ func run() error {
 
 	mux := runtime.NewServeMux()
 	opts := []grpc.DialOption{grpc.WithInsecure()}
-	err := gw.RegisterGRPCHandlerFromEndpoint(ctx, mux, *echoEndpoint, opts)
+	err := gw.RegisterGRPCHandlerFromEndpoint(ctx, mux, *serverEndpoint, opts)
 	if err != nil {
 		return err
 	}
