@@ -9,10 +9,10 @@ import (
 )
 
 var (
-	initUsage = "deploys the server and gateway to your cluster"
+	initUsage = "deploys the server and dashboard to your cluster"
 
-	serverImage  string
-	gatewayImage string
+	serverImage    string
+	dashboardImage string
 )
 
 type initCmd struct {
@@ -35,14 +35,14 @@ func newInitCmd(out io.Writer) *cobra.Command {
 
 	flags := cmd.PersistentFlags()
 	flags.StringVar(&serverImage, "server-image", "", "docker image to use for the server deployment")
-	flags.StringVar(&gatewayImage, "gateway-image", "", "docker image to use for the web gatewayw")
+	flags.StringVar(&dashboardImage, "dashboard-image", "", "docker image to use for the dashboard")
 
 	return cmd
 }
 
 func (cmd *initCmd) run() error {
 
-	err := k8s.CreateDeployment(kubeconfig, serverImage, gatewayImage, deploymentName)
+	err := k8s.CreateDeployment(kubeconfig, serverImage, dashboardImage, deploymentName)
 	if err != nil {
 		return fmt.Errorf("cannot create deployment: %v", err)
 	}

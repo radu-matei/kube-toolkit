@@ -3,7 +3,6 @@ package k8s
 import (
 	"fmt"
 
-	log "github.com/Sirupsen/logrus"
 	appsv1beta1 "k8s.io/api/apps/v1beta1"
 	"k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -15,8 +14,6 @@ import (
 // GetKubeClient is a convenience method for creating kubernetes config and client
 // for a given kubeconfig
 func GetKubeClient(kubeconfig string) (*kubernetes.Clientset, *restclient.Config, error) {
-
-	log.Debugf("getting kube clientset from kubeconfig %v", kubeconfig)
 	config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
 	if err != nil {
 		return nil, nil, fmt.Errorf("could not get kubernetes config from kubeconfig '%s': %v", kubeconfig, err)
@@ -79,7 +76,7 @@ func CreateDeployment(kubeconfig, serverImage, gatewayImage, name string) error 
 							Image: serverImage,
 						},
 						{
-							Name:  fmt.Sprintf("%s-gateway", name),
+							Name:  fmt.Sprintf("%s-dashboard", name),
 							Image: gatewayImage,
 							Ports: []v1.ContainerPort{
 								{
@@ -101,11 +98,6 @@ func CreateDeployment(kubeconfig, serverImage, gatewayImage, name string) error 
 	}
 
 	return nil
-}
-
-// StartProxy starts a proxy to the gateway
-func StartProxy(localPort int) {
-
 }
 
 func int32Ptr(i int32) *int32 { return &i }
