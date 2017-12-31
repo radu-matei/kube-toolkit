@@ -1,8 +1,23 @@
-FROM scratch
+FROM node:8-alpine as builder
 
-# TODO - create build-time argument for binary name
-COPY bin/gateway-linux .
+COPY gateway/web /app
+WORKDIR /app/web
+
+RUN npm install -g typescript
+RUN npm install -g @angular/cli
+RUN npm install
+
+RUN ng build --prod --base-href=/ui --deploy-url=/ui
+
+
+FROM alpine
+
+
+
+COPY --from=builder /app/dist /app/web
+COPY bin/gateway-linux /app
 
 EXPOSE 8080
 
-ENTRYPOINT ["./gateway-linux"]
+WORKDIR /app
+CMD ["./gateway-linux"]

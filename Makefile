@@ -8,7 +8,7 @@ SEMVER = "v0.3.1"
 
 CLIENT_CMD_PATH = cmd/client
 SERVER_CMD_PATH = cmd/server
-GATEWAY_CMD_PATH = cmd/gateway
+GATEWAY_CMD_PATH = gateway
 
 CLIENT_BINARY_NAME = ktk
 SERVER_BINARY_NAME = ktkd
@@ -26,10 +26,12 @@ LDFLAGS += -X $(VERSION_PACKAGE).SemVer=${SEMVER}
 
 PROTOBUF_INCLUDE_DIR = vendor/protobuf-include
 GRPC_GATEWAY_PROTO = vendor/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis
+SWAGGER_ANNOTATIONS = vendor/github.com/grpc-ecosystem/grpc-gateway/
+
 
 .PHONY: rpc
 rpc:
-	protoc -I $(protoc_location) -I $(PROTOBUF_INCLUDE_DIR) -I $(GRPC_GATEWAY_PROTO)  --$(target)_out=plugins=$(plugins):$(protoc_location) $(protoc_location)/*.proto --grpc-gateway_out=logtostderr=true:$(protoc_location)
+	protoc -I $(protoc_location) -I $(PROTOBUF_INCLUDE_DIR) -I $(GRPC_GATEWAY_PROTO) -I $(SWAGGER_ANNOTATIONS) --$(target)_out=plugins=$(plugins):$(protoc_location) $(protoc_location)/*.proto --grpc-gateway_out=logtostderr=true:$(protoc_location) --swagger_out=logtostderr=true:gateway/web
 
 
 .PHONY: bin
@@ -50,7 +52,7 @@ server:
 .PHONY: gateway
 gateway:
 	cd $(GATEWAY_CMD_PATH) && \
-	go build -o ../../$(OUTPUT_DIR)/$(GATEWAY_BINARY_NAME)
+	go build -o ../$(OUTPUT_DIR)/$(GATEWAY_BINARY_NAME)
 
 .PHONY: clean
 clean:
@@ -69,4 +71,4 @@ server-linux:
 .PHONY: gateway-linux
 gateway-linux:
 	cd $(GATEWAY_CMD_PATH) && \
-	GOOS=linux go build -o ../../$(OUTPUT_DIR)/$(GATEWAY_LINUX_BINARY)
+	GOOS=linux go build -o ../$(OUTPUT_DIR)/$(GATEWAY_LINUX_BINARY)

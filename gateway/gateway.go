@@ -20,14 +20,20 @@ func run() error {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
-	mux := runtime.NewServeMux()
+	gwMux := runtime.NewServeMux()
 	opts := []grpc.DialOption{grpc.WithInsecure()}
-	err := gw.RegisterGRPCHandlerFromEndpoint(ctx, mux, *serverEndpoint, opts)
+	err := gw.RegisterGRPCHandlerFromEndpoint(ctx, gwMux, *serverEndpoint, opts)
 	if err != nil {
 		return err
 	}
 
-	return http.ListenAndServe(":8080", mux)
+	m := http.NewServeMux()
+
+	m.HandleFunc("/", gwMux.ServeHTTP)
+
+	serveStatic(m)
+
+	return http.ListenAndServe(":8080", m)
 }
 
 func main() {
@@ -37,4 +43,10 @@ func main() {
 	if err := run(); err != nil {
 		glog.Fatal(err)
 	}
+}
+
+func serveStatic(mux *http.ServeMux) {
+	fileServer := http.FileServer(http.Dir("web"))
+	prefix := "/ui/"
+	mux.Handle(prefix, http.StripPrefix(prefix, fileServer))
 }
