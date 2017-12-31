@@ -1,7 +1,7 @@
-kube-toolkit  - https://radu-matei.com/blog/kube-toolkit/
-==========================================================
+kube-toolkit 
+============
 
-![](https://raw.githubusercontent.com/ashleymcnamara/gophers/master/BATMAN_GOPHER.png | width=250)
+![](docs/BATMAN_GOPHER.png)
 
 > Image from [@ashleymcnamara](https://github.com/ashleymcnamara/gophers)'s gopher artwork - [license](https://github.com/ashleymcnamara/gophers/blob/master/LICENSE)
 
