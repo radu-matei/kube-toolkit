@@ -31,7 +31,7 @@ SWAGGER_ANNOTATIONS = vendor/github.com/grpc-ecosystem/grpc-gateway/
 .PHONY: rpc
 rpc:
 	protoc -I $(protoc_location) -I $(PROTOBUF_INCLUDE_DIR) -I $(GRPC_GATEWAY_PROTO) -I $(SWAGGER_ANNOTATIONS) --$(target)_out=plugins=$(plugins):$(protoc_location) $(protoc_location)/*.proto --grpc-gateway_out=logtostderr=true:$(protoc_location) --swagger_out=logtostderr=true:gateway/web && \
-	cd gateway/web && mkdir src/generated-client && docker run --rm -v ${PWD}/gateway/web:/local swaggerapi/swagger-codegen-cli generate     -i /local/rpc.swagger.json     -l typescript-angular      -c /local/swagger.config.json     -o /local/src/generated-client
+	cd gateway/web && rm -rf src/generated-client &&  mkdir src/generated-client && docker run --rm -v ${PWD}/gateway/web:/local swaggerapi/swagger-codegen-cli generate     -i /local/rpc.swagger.json     -l typescript-angular      -c /local/swagger.config.json     -o /local/src/generated-client
 
 
 .PHONY: bin
