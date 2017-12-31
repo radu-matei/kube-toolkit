@@ -14,9 +14,9 @@ import (
 )
 
 const (
-	remoteServerPort  = 10000
-	remoteGatewayPort = 8080
-	localRandomPort   = 0
+	remoteServerPort = 10000
+	dashboardPort    = 8080
+	localRandomPort  = 0
 )
 
 var (

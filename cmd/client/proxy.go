@@ -32,7 +32,7 @@ func newProxyCmd(out io.Writer) *cobra.Command {
 		Short: proxyUsage,
 		Long:  proxyUsage,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			err := setupConnection(remoteGatewayPort, port)
+			err := setupConnection(dashboardPort, port)
 			if err != nil {
 				log.Fatalf("cannot setup connection: %v", err)
 			}
