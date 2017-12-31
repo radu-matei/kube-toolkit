@@ -109,7 +109,7 @@ func RegisterGRPCHandlerClient(ctx context.Context, mux *runtime.ServeMux, clien
 }
 
 var (
-	pattern_GRPC_GetVersion_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"version"}, ""))
+	pattern_GRPC_GetVersion_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"api", "version"}, ""))
 )
 
 var (

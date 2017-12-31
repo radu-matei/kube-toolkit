@@ -4,11 +4,20 @@ package rpc;
 
 import "google/protobuf/empty.proto";
 import "google/api/annotations.proto";
+import "protoc-gen-swagger/options/annotations.proto";
+
+option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
+  info: {
+    title: "HTTP gateway for GRPC service";
+  };
+  base_path: ":8081";
+  
+};
 
 service GRPC {
 	rpc GetVersion(google.protobuf.Empty) returns (Version){
 		option (google.api.http) = {
-            get: "/version"
+            get: "/api/version"
           };
 	}
 	rpc ServerStream(google.protobuf.Empty) returns(stream Message){}
