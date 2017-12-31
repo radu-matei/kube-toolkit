@@ -1,18 +1,17 @@
+CLIENT_BINARY_NAME = ktk
+SERVER_BINARY_NAME = ktkd
+GATEWAY_BINARY_NAME = gateway
+
 plugins = grpc
 target = go
 protoc_location = pkg/rpc
 
-
 GIT_COMMIT = $(shell git rev-parse HEAD)
-SEMVER = "v0.3.1"
+SEMVER = $(shell git tag | tail -n1)
 
 CLIENT_CMD_PATH = cmd/client
 SERVER_CMD_PATH = cmd/server
 GATEWAY_CMD_PATH = gateway
-
-CLIENT_BINARY_NAME = ktk
-SERVER_BINARY_NAME = ktkd
-GATEWAY_BINARY_NAME = gateway
 
 CLIENT_LINUX_BINARY = $(CLIENT_BINARY_NAME)-linux
 SERVER_LINUX_BINARY = $(SERVER_BINARY_NAME)-linux
@@ -40,34 +39,41 @@ bin:
 	$(MAKE) client && \
 	$(MAKE) server
 
+
 .PHONY: client
 client:
 	cd $(CLIENT_CMD_PATH) && \
 	go build -ldflags '$(LDFLAGS)' -o ../../$(OUTPUT_DIR)/$(CLIENT_BINARY_NAME)
+
 
 .PHONY: server
 server:
 	cd $(SERVER_CMD_PATH) && \
 	go build -ldflags '$(LDFLAGS)' -o ../../$(OUTPUT_DIR)/$(SERVER_BINARY_NAME)
 
+
 .PHONY: gateway
 gateway:
 	cd $(GATEWAY_CMD_PATH) && \
 	go build -o ../$(OUTPUT_DIR)/$(GATEWAY_BINARY_NAME)
 
+
 .PHONY: clean
 clean:
 	rm -rf bin/
+
 
 .PHONY: client-linux
 client-linux:
 	cd $(CLIENT_CMD_PATH) && \
 	GOOS=linux go build -ldflags '$(LDFLAGS)' -o ../../$(OUTPUT_DIR)/$(CLIENT_LINUX_BINARY)
 
+
 .PHONY: server-linux
 server-linux:
 	cd $(SERVER_CMD_PATH) && \
 	GOOS=linux go build -ldflags '$(LDFLAGS)' -o ../../$(OUTPUT_DIR)/$(SERVER_LINUX_BINARY)
+
 	
 .PHONY: gateway-linux
 gateway-linux:
