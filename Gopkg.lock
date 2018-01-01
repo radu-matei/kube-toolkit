@@ -20,6 +20,18 @@
   version = "v1.0.3"
 
 [[projects]]
+  name = "github.com/coreos/etcd"
+  packages = ["client","pkg/pathutil","pkg/srv","pkg/types","version"]
+  revision = "f7a395f0308d6c921937b3b5d7c716ffb8018e9e"
+  version = "v3.3.0-rc.0"
+
+[[projects]]
+  name = "github.com/coreos/go-semver"
+  packages = ["semver"]
+  revision = "8ab6407b697782a06568d4b7f1db25550ec2e4c6"
+  version = "v0.2.0"
+
+[[projects]]
   name = "github.com/davecgh/go-spew"
   packages = ["spew"]
   revision = "346938d642f2ec3594ed81d874461961cd0faa76"
@@ -117,7 +129,7 @@
 
 [[projects]]
   name = "github.com/grpc-ecosystem/grpc-gateway"
-  packages = ["runtime","runtime/internal","utilities"]
+  packages = ["protoc-gen-swagger/options","runtime","runtime/internal","utilities"]
   revision = "07f5e79768022f9a3265235f0db4ac8c3f675fec"
   version = "v1.3.1"
 
@@ -180,6 +192,12 @@
   packages = ["."]
   revision = "e57e3eeb33f795204c1ca35f56c44f83227c6e66"
   version = "v1.0.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/ugorji/go"
+  packages = ["codec"]
+  revision = "ccfe18359b55b97855cee1d3f74e5efbda4869dc"
 
 [[projects]]
   branch = "master"
@@ -261,6 +279,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "c520cecaa802b52bd0044d6d60d9f7e437dd6084aa5e9bab591628af3a32159d"
+  inputs-digest = "a014b12dc04ef23ff49efbba29b7f157a2d9a972ea9aefafb20cd2c47c37f54a"
   solver-name = "gps-cdcl"
   solver-version = 1

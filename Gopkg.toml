@@ -42,3 +42,9 @@
 [[constraint]]
   name = "k8s.io/client-go"
   revision = "82aa063804cf055e16e8911250f888bc216e8b61"
+
+
+[[constraint]]
+  name = "github.com/coreos/etcd"
+  version = "3.3.0-rc.0"
+
