@@ -7,6 +7,7 @@ import (
 	"time"
 
 	log "github.com/Sirupsen/logrus"
+	"github.com/coreos/etcd/client"
 	google_protobuf "github.com/golang/protobuf/ptypes/empty"
 	"github.com/radu-matei/kube-toolkit/pkg/rpc"
 	"github.com/radu-matei/kube-toolkit/pkg/version"
@@ -17,6 +18,14 @@ import (
 // Config contains all configuration for the server
 type Config struct {
 	ListenAddress string
+}
+
+var cfg = client.Config{
+	// to add as cluster internal IP / DNS and environment variable
+	Endpoints: []string{"http://127.0.0.1:2379"},
+	Transport: client.DefaultTransport,
+	// set timeout per request to fail fast when the target endpoint is unavailable
+	HeaderTimeoutPerRequest: time.Second,
 }
 
 // Server contains all methods and config for the server
@@ -94,4 +103,46 @@ func (server *Server) ServerStream(_ *google_protobuf.Empty, stream rpc.GRPC_Ser
 	}
 
 	return nil
+}
+
+// GetValue returns the value of an etcd key, if present
+func (server *Server) GetValue(ctx context.Context, m *rpc.StateMessage) (*rpc.StateMessage, error) {
+	log.Debugf("received request to get key %v from etcd...", m.Key)
+
+	c, err := client.New(cfg)
+	if err != nil {
+		return nil, fmt.Errorf("cannot get etcd client: %v", err)
+	}
+
+	keysAPI := client.NewKeysAPI(c)
+	resp, err := keysAPI.Get(ctx, m.Key, nil)
+	if err != nil {
+		return nil, fmt.Errorf("cannot get key: %v", err)
+	}
+
+	return &rpc.StateMessage{
+		Key:   m.Key,
+		Value: resp.Node.Value,
+	}, nil
+}
+
+// PutValue creates a new entry in etcd with m.Key / m.Value
+func (server *Server) PutValue(ctx context.Context, m *rpc.StateMessage) (*rpc.StateMessage, error) {
+	log.Debugf("received request to put key %v with value %v...", m.Key, m.Value)
+
+	c, err := client.New(cfg)
+	if err != nil {
+		return nil, fmt.Errorf("cannot get etcd client: %v", err)
+	}
+
+	keysAPI := client.NewKeysAPI(c)
+	resp, err := keysAPI.Set(ctx, m.Key, m.Value, nil)
+	if err != nil {
+		return nil, fmt.Errorf("cannot create entry %v: %v", m.Key, m.Value)
+	}
+
+	return &rpc.StateMessage{
+		Key:   resp.Node.Key,
+		Value: resp.Node.Value,
+	}, nil
 }
