@@ -36,6 +36,14 @@ func NewClient(cfg *Config, conn *grpc.ClientConn) *Client {
 	}
 }
 
+//GetGRPCConnection returns a new grpc connection
+func GetGRPCConnection(serverHost string) (conn *grpc.ClientConn, err error) {
+	if conn, err = grpc.Dial(serverHost, grpc.WithInsecure()); err != nil {
+		return nil, fmt.Errorf("failed to dial %q: %v", serverHost, err)
+	}
+	return conn, nil
+}
+
 // GetVersion returns the server version
 func (client *Client) GetVersion(ctx context.Context) (*rpc.Version, error) {
 	return client.RPC.GetVersion(ctx, &google_protobuf.Empty{})
@@ -64,10 +72,12 @@ func (client *Client) ServerStream(ctx context.Context, opts ...grpc.CallOption)
 	return nil
 }
 
-//GetGRPCConnection returns a new grpc connection
-func GetGRPCConnection(serverHost string) (conn *grpc.ClientConn, err error) {
-	if conn, err = grpc.Dial(serverHost, grpc.WithInsecure()); err != nil {
-		return nil, fmt.Errorf("failed to dial %q: %v", serverHost, err)
-	}
-	return conn, nil
+// GetValue gets the value of an existing key in etcd
+func (client *Client) GetValue(ctx context.Context, m *rpc.StateMessage) (*rpc.StateMessage, error) {
+	return client.RPC.GetValue(ctx, m)
+}
+
+// PutValue creates a new entry in etcd with m.Key / m.Value
+func (client *Client) PutValue(ctx context.Context, m *rpc.StateMessage, opts ...grpc.CallOption) (*rpc.StateMessage, error) {
+	return client.RPC.PutValue(ctx, m)
 }
