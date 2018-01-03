@@ -54,20 +54,13 @@ func newRootCmd(out io.Writer, in io.Reader) *cobra.Command {
 	flags.StringVar(&serverHost, "host", "", "address of the server")
 	flags.StringVar(&deploymentName, "name", "kube-toolkit", "kubernetes deployment name")
 
-	state := newStateCmd(out)
-	state.AddCommand(
-		newGetStateCmd(out),
-		newPutStateCmd(out),
-	)
-
 	cmd.AddCommand(
 		newInitCmd(out),
 		newProxyCmd(out),
 		newResetCmd(out),
 		newServerStreamCmd(out),
+		newStateCmd(out),
 		newVersionCmd(out),
-
-		state,
 	)
 
 	return cmd
