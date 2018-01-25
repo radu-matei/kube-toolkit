@@ -99,7 +99,10 @@ The main service name is `GRPC`, and we will look at the `GetVersion` method we 
 We will use the `.proto` file to automatically generate the gRPC client, server, swagger definition and HTTP gateway that will serve HTTP clients to the gRPC server - if you take a look at the Makefile at the `rpc` target:
 
 ```
-protoc --go_out=plugins=grpc:pkg/rpc pkg/rpc/*.proto --grpc-gateway_out=logtostderr=true:pkg/rpc --swagger_out=logtostderr=true:gateway/web
+protoc 
+	--go_out=plugins=grpc:pkg/rpc pkg/rpc/*.proto 
+	--grpc-gateway_out=logtostderr=true:pkg/rpc 
+	--swagger_out=logtostderr=true:gateway/web
 ```
 
 The `protoc` compiler will generate the Go gRPC client and server, as well as the gRPC-gateway (HTTP web server implementation that handles requests to REST API paths and maps them to gRPC requests) and the swagger definition that we will use to automatically generate a TypeScript client to use in the web application:
