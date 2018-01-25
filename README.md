@@ -50,7 +50,7 @@ On Windows:
 
 Then, you need to execute the `init` command - the client can automatically deploy to your cluster the server-side and web components, using the Kuberentes Go Client - you need to specify the Docker image for the gRPC server - `server-image` and for the web dashboard - `dashboard-image`. At the moment of writing this article, the latest pushed version is [`v0.4.3`](https://github.com/radu-matei/kube-toolkit/releases/tag/v0.4.3). If you use the client from that revision and the Docker images below, things should work properly.
 
-`bin/ktk init --server-image radumatei/kube-toolkit:v0.4.3 --dashboard-image radumatei/kube-toolkit-dashboard:v0.4.3`
+`bin/ktk init --server-image radumatei/kube-toolkit:latest --dashboard-image radumatei/kube-toolkit-dashboard:v0.4.3`
 
 > If you want to clone the `master` branch, there is no guarantee that things will work correctly!
 
