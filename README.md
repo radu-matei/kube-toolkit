@@ -12,6 +12,10 @@ If you ever used `kubectl`, [Helm](https://github.com/kubernetes/helm), [Draft](
 
 This is a toolkit for creating gRPC-based CLI and web tools for Kubernetes, and it should be used as a starting point in new awesome tools for Kubernetes, written in Go.
 
+Here's a quick introduction of `kube-toolkit` to [SIG-Apps](https://github.com/kubernetes/community/tree/master/sig-apps):
+
+[![sig-apps](https://img.youtube.com/vi/wLwzcVzxpls/0.jpg)](https://youtu.be/wLwzcVzxpls?t=1m56s)
+
 
 Architecture
 -------------
