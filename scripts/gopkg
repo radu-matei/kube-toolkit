@@ -1,0 +1,6 @@
+#!/usr/bin/env bash -e
+
+pwd=$(pwd)
+gosrc=$(go run scripts/gopath.go)/src/
+
+echo ${pwd/$gosrc/}
