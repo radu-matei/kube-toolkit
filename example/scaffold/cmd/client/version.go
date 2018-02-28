@@ -6,8 +6,8 @@ import (
 	"io"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/radu-matei/kube-toolkit/pkg/client"
-	"github.com/radu-matei/kube-toolkit/pkg/version"
+	"github.com/radu-matei/kube-toolkit/example/scaffold/pkg/client"
+	"github.com/radu-matei/kube-toolkit/example/scaffold/pkg/version"
 	"github.com/spf13/cobra"
 )
 

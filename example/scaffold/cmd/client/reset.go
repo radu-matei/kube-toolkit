@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/radu-matei/kube-toolkit/pkg/client"
+	"github.com/radu-matei/kube-toolkit/example/scaffold/pkg/client"
 	"github.com/radu-matei/kube-toolkit/pkg/k8s"
 	"github.com/spf13/cobra"
 )

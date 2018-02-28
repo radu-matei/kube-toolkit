@@ -6,7 +6,7 @@ import (
 	"os"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/radu-matei/kube-toolkit/pkg/client"
+	"github.com/radu-matei/kube-toolkit/example/scaffold/pkg/client"
 	"github.com/radu-matei/kube-toolkit/pkg/k8s"
 	"github.com/radu-matei/kube-toolkit/pkg/portforwarder"
 	"github.com/spf13/cobra"

@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -euo pipefail
+
+test -z "$(find . -path ./vendor -prune -type f -o -name '*.go' -exec gofmt -d {} + | tee /dev/stderr)"
+go test -v $(go list ./... | grep -v '/vendor/' | grep -v '/hack')
+go vet $(go list ./... | grep -v '/vendor/')

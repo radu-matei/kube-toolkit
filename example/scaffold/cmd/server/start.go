@@ -3,7 +3,7 @@ package main
 import (
 	"io"
 
-	"github.com/radu-matei/kube-toolkit/pkg/server"
+	"github.com/radu-matei/kube-toolkit/example/scaffold/pkg/server"
 	"github.com/spf13/cobra"
 	"golang.org/x/net/context"
 )
