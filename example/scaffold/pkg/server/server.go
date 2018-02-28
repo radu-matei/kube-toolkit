@@ -8,8 +8,8 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	google_protobuf "github.com/golang/protobuf/ptypes/empty"
-	"github.com/radu-matei/kube-toolkit/pkg/rpc"
-	"github.com/radu-matei/kube-toolkit/pkg/version"
+	"github.com/radu-matei/kube-toolkit/example/scaffold/pkg/rpc"
+	"github.com/radu-matei/kube-toolkit/example/scaffold/pkg/version"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 )

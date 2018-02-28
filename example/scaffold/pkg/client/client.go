@@ -7,7 +7,7 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	google_protobuf "github.com/golang/protobuf/ptypes/empty"
-	"github.com/radu-matei/kube-toolkit/pkg/rpc"
+	"github.com/radu-matei/kube-toolkit/example/scaffold/pkg/rpc"
 	"google.golang.org/grpc"
 )
 
