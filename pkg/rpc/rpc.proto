@@ -20,6 +20,21 @@ service GRPC {
             get: "/api/version"
           };
 	}
+
+	rpc GetValue(StateMessage) returns (StateMessage){
+		option (google.api.http) = {
+			post: "/api/get",
+			body: "*"
+		};
+	}
+
+	rpc PutValue(StateMessage) returns (StateMessage){
+		option (google.api.http) = {
+			post: "/api/put",
+			body: "*"
+		};
+	}
+
 	rpc ServerStream(google.protobuf.Empty) returns(stream Message){}
 }
 
@@ -30,4 +45,9 @@ message Version {
 
 message Message {
 	string message = 1;
+}
+
+message StateMessage {
+	string key = 1;
+	string value = 2;
 }

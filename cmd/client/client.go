@@ -58,8 +58,9 @@ func newRootCmd(out io.Writer, in io.Reader) *cobra.Command {
 		newInitCmd(out),
 		newProxyCmd(out),
 		newResetCmd(out),
-		newVersionCmd(out),
 		newServerStreamCmd(out),
+		newStateCmd(out),
+		newVersionCmd(out),
 	)
 
 	return cmd
