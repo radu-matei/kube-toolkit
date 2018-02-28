@@ -19,7 +19,7 @@ GATEWAY_LINUX_BINARY = $(GATEWAY_BINARY_NAME)-linux
 
 OUTPUT_DIR = bin
 
-VERSION_PACKAGE = github.com/radu-matei/kube-toolkit/pkg/version
+VERSION_PACKAGE = $(shell scripts/gopkg)/pkg/version
 LDFLAGS += -X $(VERSION_PACKAGE).GitCommit=${GIT_COMMIT}
 LDFLAGS += -X $(VERSION_PACKAGE).SemVer=${SEMVER}
 
